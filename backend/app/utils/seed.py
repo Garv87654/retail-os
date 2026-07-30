@@ -18,6 +18,15 @@ def seed_database(drop_tables: bool = False):
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
         print("Database tables created.")
+    else:
+        try:
+            role_count = db.query(Role).count()
+            if role_count > 0:
+                print("Database is already seeded. Skipping seed.")
+                db.close()
+                return
+        except Exception:
+            Base.metadata.create_all(bind=engine)
     
     # 1. Seed Roles & Permissions
     roles = [
@@ -286,4 +295,4 @@ def seed_database(drop_tables: bool = False):
     print("Database seeding completed successfully.")
 
 if __name__ == "__main__":
-    seed_database(drop_tables=True)
+    seed_database(drop_tables=False)
