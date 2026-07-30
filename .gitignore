@@ -1,0 +1,19 @@
+# Node.js dependencies
+node_modules/
+dist/
+.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+env/
+venv/
+retail_os.db
+
+# System files
+.DS_Store
+Thumbs.db
