@@ -1,6 +1,7 @@
 from typing import List, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
@@ -23,7 +24,7 @@ def get_warehouses(db: Session = Depends(get_db), current_user: User = Depends(r
     res = []
     for w in warehouses:
         # Sum current stock in warehouse
-        total_items = db.query(WarehouseInventory).filter(WarehouseInventory.warehouse_id == w.id).sum(WarehouseInventory.current_stock) or 0
+        total_items = db.query(func.sum(WarehouseInventory.current_stock)).filter(WarehouseInventory.warehouse_id == w.id).scalar() or 0
         util_pct = (total_items / w.capacity) * 100 if w.capacity > 0 else 0
         res.append(
             WarehouseResponse(
@@ -48,7 +49,7 @@ def get_warehouse(warehouse_id: int, db: Session = Depends(get_db), current_user
     if not w:
         raise HTTPException(status_code=404, detail="Warehouse not found")
         
-    total_items = db.query(WarehouseInventory).filter(WarehouseInventory.warehouse_id == w.id).sum(WarehouseInventory.current_stock) or 0
+    total_items = db.query(func.sum(WarehouseInventory.current_stock)).filter(WarehouseInventory.warehouse_id == w.id).scalar() or 0
     util_pct = (total_items / w.capacity) * 100 if w.capacity > 0 else 0
     
     return WarehouseResponse(
@@ -102,7 +103,7 @@ def update_warehouse(warehouse_id: int, wh: WarehouseCreate, db: Session = Depen
     db.commit()
     db.refresh(w)
     
-    total_items = db.query(WarehouseInventory).filter(WarehouseInventory.warehouse_id == w.id).sum(WarehouseInventory.current_stock) or 0
+    total_items = db.query(func.sum(WarehouseInventory.current_stock)).filter(WarehouseInventory.warehouse_id == w.id).scalar() or 0
     util_pct = (total_items / w.capacity) * 100 if w.capacity > 0 else 0
     
     log_event(db, "UPDATE_WAREHOUSE", f"Updated warehouse {w.name}", current_user.id, current_user.username)
@@ -183,7 +184,7 @@ def transfer_stock(req: StockTransferRequest, db: Session = Depends(get_db), cur
         raise HTTPException(status_code=400, detail="Insufficient stock in source warehouse")
         
     # Check capacity in target warehouse
-    target_stock = db.query(WarehouseInventory).filter(WarehouseInventory.warehouse_id == req.to_warehouse_id).sum(WarehouseInventory.current_stock) or 0
+    target_stock = db.query(func.sum(WarehouseInventory.current_stock)).filter(WarehouseInventory.warehouse_id == req.to_warehouse_id).scalar() or 0
     if target_stock + req.quantity > to_wh.capacity:
         raise HTTPException(status_code=400, detail="Target warehouse has insufficient capacity")
         
