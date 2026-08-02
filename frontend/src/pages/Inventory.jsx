@@ -60,13 +60,15 @@ const Inventory = () => {
 
   const loadProducts = () => {
     setLoading(true)
-    API.getProducts({
-      search,
-      category_id: catFilter,
-      status_filter: statusFilter,
+    const params = {
       sort_by: sortBy,
       sort_dir: sortDir
-    }).then(res => {
+    }
+    if (search.trim()) params.search = search.trim()
+    if (catFilter) params.category_id = parseInt(catFilter)
+    if (statusFilter) params.status_filter = statusFilter
+
+    API.getProducts(params).then(res => {
       setProducts(res.data)
       setLoading(false)
     }).catch(err => {
