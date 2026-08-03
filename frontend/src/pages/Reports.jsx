@@ -49,15 +49,15 @@ const Reports = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Net Inventory Assets</span>
-          <p className="text-2xl font-bold">${(summary?.inventory?.total_stock_value || 12845.00).toLocaleString()}</p>
+          <p className="text-2xl font-bold">${(summary?.inventory?.total_stock_value ?? 0.00).toLocaleString()}</p>
         </div>
         <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Net Revenue Collections</span>
-          <p className="text-2xl font-bold text-emerald-500">${(summary?.sales?.total_revenue || 54290.50).toLocaleString()}</p>
+          <p className="text-2xl font-bold text-emerald-500">${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}</p>
         </div>
         <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl space-y-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Active Suppliers</span>
-          <p className="text-2xl font-bold">{summary?.suppliers?.total_suppliers || 20} Active</p>
+          <p className="text-2xl font-bold">{summary?.suppliers?.total_suppliers ?? 0} Active</p>
         </div>
       </div>
 

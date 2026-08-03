@@ -101,21 +101,21 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Products"
-          value={summary?.inventory?.total_products || '100'}
+          value={summary?.inventory?.total_products ?? 0}
           icon={Package}
           change="+8.2%"
         />
         <MetricCard
           title="Low Stock Products"
-          value={summary?.inventory?.low_stock || '12'}
+          value={summary?.inventory?.low_stock ?? 0}
           icon={AlertTriangle}
           change="-4.5%"
           isNegative={true}
-          subtitle={`Out of stock: ${summary?.inventory?.out_of_stock || 2}`}
+          subtitle={`Out of stock: ${summary?.inventory?.out_of_stock ?? 0}`}
         />
         <MetricCard
           title="Monthly Revenue"
-          value={`$${(summary?.sales?.total_revenue || 54290.50).toLocaleString()}`}
+          value={`$${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
           icon={DollarSign}
           change="+15.3%"
         />
