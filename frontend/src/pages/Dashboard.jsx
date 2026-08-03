@@ -45,13 +45,13 @@ const Dashboard = () => {
 
   // Static/Mock Chart Data for visual excellence (aligned with seeded values)
   const monthlySalesData = [
-    { name: 'Jan', Sales: 4000, Purchases: 2400 },
-    { name: 'Feb', Sales: 3000, Purchases: 1398 },
-    { name: 'Mar', Sales: 9800, Purchases: 2000 },
-    { name: 'Apr', Sales: 2780, Purchases: 3908 },
-    { name: 'May', Sales: 1890, Purchases: 4800 },
-    { name: 'Jun', Sales: 2390, Purchases: 3800 },
-    { name: 'Jul', Sales: 3490, Purchases: 4300 }
+    { name: 'Jan', Sales: 4200, Purchases: 3800 },
+    { name: 'Feb', Sales: 5100, Purchases: 2900 },
+    { name: 'Mar', Sales: 6800, Purchases: 5100 },
+    { name: 'Apr', Sales: 4900, Purchases: 4200 },
+    { name: 'May', Sales: 7200, Purchases: 4900 },
+    { name: 'Jun', Sales: 8300, Purchases: 5400 },
+    { name: 'Jul', Sales: 9100, Purchases: 5900 }
   ]
 
   const warehouseUtilizationData = [
@@ -63,11 +63,11 @@ const Dashboard = () => {
   ]
 
   const topSellingProducts = [
-    { name: 'VoltTech Premium Item', sales: 450 },
-    { name: 'ApexAudio Premium Item', sales: 380 },
-    { name: 'KitchMaster Item', sales: 320 },
-    { name: 'UrbanFit Item', sales: 290 },
-    { name: 'TrekPeak Outfitter', sales: 240 }
+    { name: 'VoltTech Noise-Canceling Headphones', sales: 450 },
+    { name: 'ApexAudio Mechanical Keyboard', sales: 380 },
+    { name: 'KitchMaster Air Fryer XL 5.5L', sales: 320 },
+    { name: 'UrbanFit Classic Denim Jacket', sales: 290 },
+    { name: 'TrekPeak Eco-Friendly Yoga Mat', sales: 240 }
   ]
 
   const COLORS = ['#0e8be4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
@@ -83,9 +83,18 @@ const Dashboard = () => {
   return (
     <div className="space-y-8 p-1">
       {/* Page Title Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">Analytics Dashboard</h1>
-        <p className="text-sm text-slate-400 mt-1">Real-time oversight of retail supply chain operations, demand metrics, and logistics KPIs.</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800 pb-5 gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">Analytics Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-1">Real-time oversight of retail supply chain operations, demand metrics, and logistics KPIs.</p>
+        </div>
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          <div className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg text-xs font-bold flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Live Sync: Connected
+          </div>
+          <span className="text-[11px] text-slate-400 font-medium">Last synced: Just now</span>
+        </div>
       </div>
 
       {/* Metrics Row */}
@@ -231,7 +240,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Transfer Complete</p>
-                <p className="text-[11px] text-slate-400 mt-1">20 units of VoltTech Item 1 transferred from Chicago to Seattle.</p>
+                <p className="text-[11px] text-slate-400 mt-1">20 units of VoltTech Noise-Canceling Headphones transferred from Chicago to Seattle.</p>
               </div>
             </div>
           </div>
