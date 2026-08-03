@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, ShoppingBag, Eye, Calendar, DollarSign, Clock, X } from 'lucide-react'
+import { Plus, ShoppingBag, Eye, Calendar, DollarSign, Clock, X, Trash2 } from 'lucide-react'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -125,6 +125,17 @@ const PurchaseOrders = () => {
     }
   }
 
+  const handleDeletePO = async (id) => {
+    if (window.confirm('Delete this purchase order?')) {
+      try {
+        await API.deletePurchaseOrder(id)
+        loadPurchaseOrders()
+      } catch (err) {
+        alert(err.response?.data?.detail || 'Error deleting purchase order')
+      }
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -184,7 +195,6 @@ const PurchaseOrders = () => {
                       }`}>
                         {po.status}
                       </span>
-                    </td>
                     <td className="px-6 py-4 text-right space-x-2">
                       <button
                         onClick={() => {
@@ -196,6 +206,15 @@ const PurchaseOrders = () => {
                       >
                         <Eye size={14} />
                       </button>
+                      {isWriter && (
+                        <button
+                          onClick={() => handleDeletePO(po.id)}
+                          className="p-1 text-slate-400 hover:text-rose-500"
+                          title="Delete Order"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

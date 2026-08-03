@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Receipt, Eye, Sparkles, AlertCircle, X } from 'lucide-react'
+import { Plus, Receipt, Eye, Sparkles, AlertCircle, X, Trash2 } from 'lucide-react'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -31,6 +31,17 @@ const SalesOrders = () => {
         console.error(err)
         setLoading(false)
       })
+  }
+
+  const handleDeleteOrder = async (id) => {
+    if (window.confirm('Delete this sales order?')) {
+      try {
+        await API.deleteSalesOrder(id)
+        loadSalesOrders()
+      } catch (err) {
+        alert(err.response?.data?.detail || 'Error deleting sales order')
+      }
+    }
   }
 
   useEffect(() => {
@@ -172,7 +183,7 @@ const SalesOrders = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">${so.grand_total.toFixed(2)}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4 text-right space-x-2">
                       <button
                         onClick={() => {
                           setSelectedOrder(so)
@@ -182,6 +193,15 @@ const SalesOrders = () => {
                       >
                         <Eye size={14} />
                       </button>
+                      {isWriter && (
+                        <button
+                          onClick={() => handleDeleteOrder(so.id)}
+                          className="p-1 text-slate-400 hover:text-rose-500"
+                          title="Delete Order"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

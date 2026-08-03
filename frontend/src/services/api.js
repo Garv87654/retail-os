@@ -31,10 +31,12 @@ const API = {
   getPurchaseOrders: () => axios.get('/api/purchase-orders/'),
   createPurchaseOrder: (data) => axios.post('/api/purchase-orders/', data),
   updatePurchaseOrderStatus: (id, status) => axios.post(`/api/purchase-orders/${id}/status?new_status=${status}`),
+  deletePurchaseOrder: (id) => axios.delete(`/api/purchase-orders/${id}`),
 
   // Sales
   getSalesOrders: () => axios.get('/api/sales-orders/'),
   createSalesOrder: (data) => axios.post('/api/sales-orders/', data),
+  deleteSalesOrder: (id) => axios.delete(`/api/sales-orders/${id}`),
 
   // Reports
   getReportsSummary: () => axios.get('/api/reports/summary'),

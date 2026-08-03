@@ -153,3 +153,14 @@ def create_sales_order(order_in: SalesOrderCreate, db: Session = Depends(get_db)
     
     log_event(db, "CREATE_SALES_ORDER", f"Created invoice {order.invoice_number} for customer {order.customer_name}", current_user.id, current_user.username)
     return order
+
+@router.delete("/{order_id}")
+def delete_sales_order(order_id: int, db: Session = Depends(get_db), current_user: User = Depends(write_roles)):
+    order = db.query(SalesOrder).filter(SalesOrder.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Sales Order not found")
+        
+    log_event(db, "DELETE_SALES_ORDER", f"Deleted invoice {order.invoice_number}", current_user.id, current_user.username)
+    db.delete(order)
+    db.commit()
+    return {"detail": "Sales Order deleted successfully"}

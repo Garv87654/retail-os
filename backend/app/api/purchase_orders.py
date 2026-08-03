@@ -181,3 +181,14 @@ def update_po_status(po_id: int, new_status: str, db: Session = Depends(get_db),
     db.commit()
     log_event(db, "UPDATE_PO_STATUS", f"Updated purchase order {po.order_number} status from {old_status} to {new_status}", current_user.id, current_user.username)
     return {"detail": f"Status updated to {new_status}", "po_status": po.status}
+
+@router.delete("/{po_id}")
+def delete_purchase_order(po_id: int, db: Session = Depends(get_db), current_user: User = Depends(write_roles)):
+    po = db.query(PurchaseOrder).filter(PurchaseOrder.id == po_id).first()
+    if not po:
+        raise HTTPException(status_code=404, detail="Purchase Order not found")
+        
+    log_event(db, "DELETE_PO", f"Deleted purchase order {po.order_number}", current_user.id, current_user.username)
+    db.delete(po)
+    db.commit()
+    return {"detail": "Purchase Order deleted successfully"}
