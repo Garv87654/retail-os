@@ -71,6 +71,14 @@ const Sidebar = () => {
 
       {/* User Footer */}
       <div className="p-4 border-t border-slate-800 bg-slate-950">
+        <div className="px-4 py-2.5 mb-3 bg-slate-900/50 rounded-xl border border-slate-800/80">
+          <p className="text-[9px] text-brand-400 uppercase tracking-widest font-extrabold">Developer Node</p>
+          <p className="text-xs text-slate-300 font-bold mt-0.5">Garv Mahajan</p>
+          <p className="text-[9px] text-emerald-400 font-semibold mt-1 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Cloud Core Active
+          </p>
+        </div>
         <button
           onClick={logout}
           className="flex items-center gap-3.5 w-full px-4 py-3 text-sm font-medium text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all duration-200"

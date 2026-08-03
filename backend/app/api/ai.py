@@ -88,6 +88,14 @@ def ai_chat(req: AIChatRequest, db: Session = Depends(get_db), current_user: Use
             else:
                 response_text = "No supplier ratings are available yet. Please complete seed operations first."
                 
+        elif "profit" in msg or "margin" in msg:
+            low_profit_prods = db.query(Product).order_by((Product.selling_price - Product.buying_price).asc()).limit(3).all()
+            if low_profit_prods:
+                items = "\n".join([f"- **{p.name}** (SKU: {p.sku}) | Buying: ${p.buying_price} | Selling: ${p.selling_price} | Profit Margin: ${round(p.selling_price - p.buying_price, 2)}" for p in low_profit_prods])
+                response_text = f"### Lowest Profit Margin Products\n\nHere are the top 3 items in our database generating the lowest profit margins:\n\n{items}\n\nYou may want to review pricing structures or renegotiate vendor contracts for these items."
+            else:
+                response_text = "No product data available to calculate margins."
+                
         else:
             response_text = f"Hello! I am your RetailOS AI Supply Chain Assistant. I have loaded context containing details on active products, stock notifications, and supplier performance. Feel free to ask about low stock alerts, supplier performance, sales trends, or to summarize current inventory status."
             

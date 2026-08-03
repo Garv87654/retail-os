@@ -99,11 +99,20 @@ def seed_database(drop_tables: bool = False):
     
     # 4. Seed Suppliers
     payment_terms_list = ["Net 30", "Net 60", "Due on Receipt", "Net 15"]
+    supplier_names = [
+        "Apex Electronics Corp", "VoltTech Global Ltd", "Global Fabrics & Textiles", 
+        "SolarFoods Wholesale", "Pacifica Goods Distributors", "Summit Auto Spares", 
+        "Chronos Watch Manufacturers", "Nordic Home Accessories", "EcoPaper Supply Co", 
+        "Nova Leather Goods", "Aero Components Inc", "Zenith Sportswear Ltd", 
+        "Pioneer Tools Wholesale", "Optima Glassware Corp", "Terra Chemicals", 
+        "Horizon Office Supplies", "Delta Packaging Inc", "Infinity Toys Group", 
+        "Prism Paints & Coatings", "Vanguard Metal Works"
+    ]
     db_suppliers = []
-    for i in range(1, 21):
+    for i, s_name in enumerate(supplier_names, 1):
         s = Supplier(
-            name=f"Supplier Nexus {i}",
-            email=f"sales@suppliernexus{i}.com",
+            name=s_name,
+            email=f"sales@{s_name.lower().replace(' ', '').replace('&', 'and')}.com",
             phone=f"800-555-{i:04d}",
             address=f"Industrial Zone Building #{i}, City Center",
             gst_number=f"GST-{random.randint(10, 99)}ABCDE{random.randint(1000, 9999)}F",
@@ -137,11 +146,71 @@ def seed_database(drop_tables: bool = False):
         "Apparel": ["UrbanFit", "AeroStyle", "CozyWear", "ActiveStep"],
         "Sports & Outdoors": ["TrekPeak", "FitGear", "AquaWave", "CampReady"]
     }
+    product_names = {
+        "Electronics": [
+            "Noise-Canceling Headphones", "Wireless Charging Pad", "Mechanical Keyboard", 
+            "Ultra-Wide Monitor", "Bluetooth Soundbar", "Portable Power Bank", 
+            "Smart Fitness Watch", "HD Webcam 1080p", "USB-C Multi-Port Hub", 
+            "Ergonomic Gaming Mouse", "Dual-Band Wi-Fi Router", "Studio Condenser Mic", 
+            "LED Ring Light", "External SSD 1TB", "Wireless Presenter Remote", 
+            "Smart Home Security Camera", "VR Headset Controller", "Compact Document Scanner", 
+            "Digital Voice Recorder", "Drawing Graphics Tablet"
+        ],
+        "Office Supplies": [
+            "Ergonomic Mesh Chair", "Bamboo Desk Organizer", "Gel Ink Pens (12 Pack)", 
+            "Dry Erase Whiteboard", "Heavy-Duty Paper Shredder", "Rechargeable Desk Lamp", 
+            "Laminating Machine", "Electric Pencil Sharpener", "Leather Writing Pad", 
+            "Adjustable Footrest", "Thermal Label Printer", "Self-Inking Date Stamp", 
+            "Cork Bulletin Board", "Premium Notebook Set", "Heavy-Duty Stapler", 
+            "Ergonomic Wrist Rest", "Desktop Document Holder", "Mini Paper Cutter", 
+            "Filing Cabinet Dividers", "Sticky Notes Value Pack"
+        ],
+        "Home & Kitchen": [
+            "Stainless Steel Kettle", "Digital Kitchen Scale", "Air Fryer XL 5.5L", 
+            "Cold Brew Coffee Maker", "Immersion Hand Blender", "Automatic Salt & Pepper Mill", 
+            "Silicone Cooking Utensils", "Glass Food Containers Set", "Non-Stick Frying Pan", 
+            "Knife Block Set (15pc)", "French Press Coffee Maker", "Electric Milk Frother", 
+            "Over-the-Sink Colander", "Herb Keeper & Saver", "Digital Food Thermometer", 
+            "Stove Gap Covers", "Reusable Storage Bags", "Silicone Baking Mats", 
+            "Stainless Steel Mixing Bowls", "Rotary Cheese Grater"
+        ],
+        "Apparel": [
+            "Classic Denim Jacket", "Slim-Fit Chino Pants", "Lightweight Running Sneakers", 
+            "Cotton Fleece Hoodie", "Puffer Winter Coat", "Canvas Backpack", 
+            "Polarized Sunglasses", "Leather Dress Belt", "Athletic Crew Socks (6 Pack)", 
+            "Waterproof Windbreaker", "Merino Wool Sweater", "Casual Slip-On Shoes", 
+            "Sports Training Shorts", "Thermal Base Layer Set", "Structured Snapback Cap", 
+            "Quick-Dry Swim Trunks", "Leather Chelsea Boots", "Knit Beanie Hat", 
+            "Linen Button-Down Shirt", "Memory Foam Sandals"
+        ],
+        "Sports & Outdoors": [
+            "Eco-Friendly Yoga Mat", "Insulated Water Bottle 32oz", "Telescopic Trekking Poles", 
+            "Ultralight Sleeping Pad", "Double Camping Hammock", "Resistance Bands Set", 
+            "Adjustable Hand Gripper", "Foam Roller 18-Inch", "Hydration Running Vest", 
+            "Portable Camping Stove", "Microfiber Travel Towel", "Waterproof Dry Bag", 
+            "Compact Binoculars 10x25", "LED Headlamp Rechargeable", "Pickleball Paddle Set", 
+            "Pop-Up Beach Tent", "Self-Inflating Sleeping Mat", "Foldable Camping Chair", 
+            "Inflatable Stand-Up Paddleboard", "Disc Golf Starter Set"
+        ]
+    }
     
+    category_counts = {cname: 0 for cname in categories}
     db_products = []
     for i in range(1, 101):
-        category = random.choice(db_categories)
+        category = None
+        for cat in db_categories:
+            if category_counts[cat.name] < 20:
+                category = cat
+                break
+        if not category:
+            category = db_categories[-1]
+            
+        category_counts[category.name] += 1
+        idx = category_counts[category.name] - 1
+        
         brand = random.choice(brands[category.name])
+        prod_name = f"{brand} {product_names[category.name][idx]}"
+        
         buying = round(random.uniform(5.0, 150.0), 2)
         selling = round(buying * random.uniform(1.3, 1.8), 2)
         
@@ -155,7 +224,7 @@ def seed_database(drop_tables: bool = False):
         
         p = Product(
             sku=sku,
-            name=f"{brand} Premium {category.name[:-1]} Item {i}",
+            name=prod_name,
             category_id=category.id,
             brand=brand,
             description=f"High-quality commercial grade {category.name.lower()} product manufactured by {brand}.",

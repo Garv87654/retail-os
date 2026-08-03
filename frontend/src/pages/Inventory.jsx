@@ -9,7 +9,8 @@ import {
   Trash2, 
   ArrowUpDown, 
   Sliders, 
-  X 
+  X,
+  TrendingUp
 } from 'lucide-react'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -30,6 +31,10 @@ const Inventory = () => {
   const [showFormModal, setShowFormModal] = useState(false)
   const [showAdjustModal, setShowAdjustModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [showForecastModal, setShowForecastModal] = useState(false)
+  const [forecastData, setForecastData] = useState(null)
+  const [forecastHorizon, setForecastHorizon] = useState('week')
+  const [loadingForecast, setLoadingForecast] = useState(false)
   
   // Form fields
   const [sku, setSku] = useState('')
