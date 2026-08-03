@@ -18,7 +18,7 @@ const SalesOrders = () => {
   const [tax, setTax] = useState(5.0)
   const [discount, setDiscount] = useState(0.0)
 
-  const isWriter = ['Admin', 'Warehouse Manager', 'Warehouse Staff'].includes(role)
+  const isWriter = ['admin', 'warehouse manager', 'warehouse staff'].includes(role?.toLowerCase())
 
   const loadSalesOrders = () => {
     setLoading(true)

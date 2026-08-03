@@ -21,8 +21,8 @@ const PurchaseOrders = () => {
   const [discount, setDiscount] = useState(0.0)
   const [shipping, setShipping] = useState(25.0)
 
-  const isApprover = ['Admin', 'Warehouse Manager', 'Procurement Manager'].includes(role)
-  const isWriter = ['Admin', 'Procurement Manager'].includes(role)
+  const isApprover = ['admin', 'warehouse manager', 'procurement manager'].includes(role?.toLowerCase())
+  const isWriter = ['admin', 'procurement manager'].includes(role?.toLowerCase())
 
   const loadPurchaseOrders = () => {
     setLoading(true)
