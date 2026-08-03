@@ -77,8 +77,8 @@ class Supplier(Base):
     rating = Column(Float, default=5.0)
     delivery_time = Column(Integer, default=5) # average in days
     status = Column(String(50), default="Active")
-    products = relationship("Product", back_populates="supplier")
-    purchase_orders = relationship("PurchaseOrder", back_populates="supplier")
+    products = relationship("Product", back_populates="supplier", cascade="all, delete-orphan")
+    purchase_orders = relationship("PurchaseOrder", back_populates="supplier", cascade="all, delete-orphan")
 
 class Warehouse(Base):
     __tablename__ = "warehouses"
@@ -93,8 +93,8 @@ class Warehouse(Base):
     phone = Column(String(50))
     email = Column(String(100))
     inventory = relationship("WarehouseInventory", back_populates="warehouse", cascade="all, delete-orphan")
-    transactions = relationship("InventoryTransaction", back_populates="warehouse")
-    forecasts = relationship("ForecastResult", back_populates="warehouse")
+    transactions = relationship("InventoryTransaction", back_populates="warehouse", cascade="all, delete-orphan")
+    forecasts = relationship("ForecastResult", back_populates="warehouse", cascade="all, delete-orphan")
 
 class WarehouseInventory(Base):
     __tablename__ = "warehouse_inventory"

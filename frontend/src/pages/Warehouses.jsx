@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Warehouse, ShieldAlert, ArrowLeftRight, Navigation, X } from 'lucide-react'
+import { Plus, Warehouse, ShieldAlert, ArrowLeftRight, Navigation, X, Trash2 } from 'lucide-react'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -63,6 +63,18 @@ const Warehouses = () => {
         console.error(err)
         setLoadingInv(false)
       })
+  }
+
+  const handleDeleteWarehouse = async (id) => {
+    if (window.confirm('Delete this warehouse?')) {
+      try {
+        await API.deleteWarehouse(id)
+        loadWarehouses()
+        if (activeWh?.id === id) setActiveWh(null)
+      } catch (err) {
+        alert(err.response?.data?.detail || 'Error deleting warehouse')
+      }
+    }
   }
 
   const handleAddClick = () => {
@@ -170,6 +182,18 @@ const Warehouses = () => {
                     <p className="text-[10px] text-slate-400 mt-0.5">{w.city}, {w.state}</p>
                   </div>
                 </div>
+                {isWriter && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation() // Prevent opening the warehouse catalog on click
+                      handleDeleteWarehouse(w.id)
+                    }}
+                    className="text-slate-400 hover:text-rose-500 p-1.5 hover:bg-rose-500/10 rounded-lg transition-all"
+                    title="Delete Warehouse"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                )}
               </div>
 
               {/* Progress Utilization */}

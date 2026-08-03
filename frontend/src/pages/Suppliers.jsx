@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Star, Award, ShieldAlert, Clock, Mail, Phone, Calendar, X } from 'lucide-react'
+import { Plus, Star, Award, ShieldAlert, Clock, Mail, Phone, Calendar, X, Trash2 } from 'lucide-react'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -55,6 +55,18 @@ const Suppliers = () => {
         console.error(err)
         setLoadingPerf(false)
       })
+  }
+
+  const handleDeleteSupplier = async (id) => {
+    if (window.confirm('Delete this supplier?')) {
+      try {
+        await API.deleteSupplier(id)
+        loadSuppliers()
+        if (activeSup?.id === id) setActiveSup(null)
+      } catch (err) {
+        alert(err.response?.data?.detail || 'Error deleting supplier')
+      }
+    }
   }
 
   const handleAddClick = () => {
@@ -117,13 +129,29 @@ const Suppliers = () => {
                   : 'border-slate-200 dark:border-slate-800'
               }`}
             >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="font-bold text-sm tracking-tight text-slate-800 dark:text-slate-100 truncate">{s.name}</h3>
-                <span className={`px-2 py-0.5 rounded-full text-[8px] font-extrabold ${
-                  s.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
-                }`}>
-                  {s.status}
-                </span>
+              <div className="flex justify-between items-start mb-3 gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm tracking-tight text-slate-800 dark:text-slate-100 truncate" title={s.name}>{s.name}</h3>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-extrabold ${
+                    s.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
+                  }`}>
+                    {s.status}
+                  </span>
+                  {isWriter && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation() // Prevent opening the performance metrics on click
+                        handleDeleteSupplier(s.id)
+                      }}
+                      className="text-slate-400 hover:text-rose-500 p-1 hover:bg-rose-500/10 rounded transition-all"
+                      title="Delete Supplier"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Rating */}
