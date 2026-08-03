@@ -121,7 +121,7 @@ const Dashboard = () => {
         />
         <MetricCard
           title="Warehouse Utilization"
-          value="70.8%"
+          value={`${summary?.warehouse_utilization_pct ?? 0}%`}
           icon={Warehouse}
           subtitle="Seeded: 5 centers active"
         />

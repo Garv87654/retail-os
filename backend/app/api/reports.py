@@ -36,6 +36,11 @@ def get_reports_summary(db: Session = Depends(get_db), current_user: User = Depe
     suppliers = db.query(Supplier).all()
     avg_rating = round(sum(s.rating for s in suppliers) / len(suppliers), 2) if suppliers else 0.0
     
+    # Warehouse Utilization calculation
+    total_capacity = db.query(func.sum(Warehouse.capacity)).scalar() or 0
+    total_stock = db.query(func.sum(Product.current_stock)).scalar() or 0
+    utilization_pct = (total_stock / total_capacity) * 100 if total_capacity > 0 else 0.0
+    
     # Dynamic monthly trend calculations
     months_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     trend_data = {
@@ -114,7 +119,8 @@ def get_reports_summary(db: Session = Depends(get_db), current_user: User = Depe
             "average_rating": avg_rating
         },
         "sales_purchases_trend": formatted_trend,
-        "top_selling_products": formatted_top_products
+        "top_selling_products": formatted_top_products,
+        "warehouse_utilization_pct": round(utilization_pct, 1)
     }
 
 class PDFReport(FPDF):
