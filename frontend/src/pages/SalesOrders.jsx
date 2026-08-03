@@ -193,15 +193,13 @@ const SalesOrders = () => {
                       >
                         <Eye size={14} />
                       </button>
-                      {isWriter && (
-                        <button
-                          onClick={() => handleDeleteOrder(so.id)}
-                          className="p-1 text-slate-400 hover:text-rose-500"
-                          title="Delete Order"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => handleDeleteOrder(so.id)}
+                        className="p-1 text-slate-400 hover:text-rose-500"
+                        title="Delete Order"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </td>
                   </tr>
                 ))

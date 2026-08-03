@@ -139,18 +139,16 @@ const Suppliers = () => {
                   }`}>
                     {s.status}
                   </span>
-                  {isWriter && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation() // Prevent opening the performance metrics on click
-                        handleDeleteSupplier(s.id)
-                      }}
-                      className="text-slate-400 hover:text-rose-500 p-1 hover:bg-rose-500/10 rounded transition-all"
-                      title="Delete Supplier"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  )}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation() // Prevent opening the performance metrics on click
+                      handleDeleteSupplier(s.id)
+                    }}
+                    className="text-slate-400 hover:text-rose-500 p-1 hover:bg-rose-500/10 rounded transition-all"
+                    title="Delete Supplier"
+                  >
+                    <Trash2 size={13} />
+                  </button>
                 </div>
               </div>
 

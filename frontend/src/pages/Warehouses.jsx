@@ -182,8 +182,7 @@ const Warehouses = () => {
                     <p className="text-[10px] text-slate-400 mt-0.5">{w.city}, {w.state}</p>
                   </div>
                 </div>
-                {isWriter && (
-                  <button
+                 <button
                     onClick={(e) => {
                       e.stopPropagation() // Prevent opening the warehouse catalog on click
                       handleDeleteWarehouse(w.id)
@@ -193,7 +192,6 @@ const Warehouses = () => {
                   >
                     <Trash2 size={13} />
                   </button>
-                )}
               </div>
 
               {/* Progress Utilization */}
