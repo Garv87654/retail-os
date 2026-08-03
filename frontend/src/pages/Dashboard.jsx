@@ -43,8 +43,8 @@ const Dashboard = () => {
       })
   }, [])
 
-  // Static/Mock Chart Data for visual excellence (aligned with seeded values)
-  const monthlySalesData = [
+  // Bind dynamic data from API, fallback to mock values for styling completeness
+  const monthlySalesData = summary?.sales_purchases_trend || [
     { name: 'Jan', Sales: 4200, Purchases: 3800 },
     { name: 'Feb', Sales: 5100, Purchases: 2900 },
     { name: 'Mar', Sales: 6800, Purchases: 5100 },
@@ -62,7 +62,7 @@ const Dashboard = () => {
     { name: 'NYC Urban', value: 92 }
   ]
 
-  const topSellingProducts = [
+  const topSellingProducts = summary?.top_selling_products || [
     { name: 'VoltTech Noise-Canceling Headphones', sales: 450 },
     { name: 'ApexAudio Mechanical Keyboard', sales: 380 },
     { name: 'KitchMaster Air Fryer XL 5.5L', sales: 320 },
