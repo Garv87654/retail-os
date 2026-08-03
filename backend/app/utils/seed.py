@@ -138,6 +138,10 @@ def seed_database(drop_tables: bool = False):
         db.refresh(cat)
         db_categories.append(cat)
         
+    print("Essential metadata seeded. Skipping products/orders for clean database canvas.")
+    db.close()
+    return
+        
     # 6. Seed Products (100 Products)
     brands = {
         "Electronics": ["VoltTech", "ApexAudio", "PixelLink", "Synapse"],
@@ -364,4 +368,4 @@ def seed_database(drop_tables: bool = False):
     print("Database seeding completed successfully.")
 
 if __name__ == "__main__":
-    seed_database(drop_tables=False)
+    seed_database(drop_tables=True)
