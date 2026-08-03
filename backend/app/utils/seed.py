@@ -364,4 +364,4 @@ def seed_database(drop_tables: bool = False):
     print("Database seeding completed successfully.")
 
 if __name__ == "__main__":
-    seed_database(drop_tables=False)
+    seed_database(drop_tables=True)
