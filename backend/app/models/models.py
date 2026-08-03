@@ -60,10 +60,10 @@ class Product(Base):
     category = relationship("Category", back_populates="products")
     supplier = relationship("Supplier", back_populates="products")
     warehouse_inventory = relationship("WarehouseInventory", back_populates="product", cascade="all, delete-orphan")
-    po_items = relationship("PurchaseOrderItem", back_populates="product")
-    sales_items = relationship("SalesOrderItem", back_populates="product")
-    transactions = relationship("InventoryTransaction", back_populates="product")
-    forecasts = relationship("ForecastResult", back_populates="product")
+    po_items = relationship("PurchaseOrderItem", back_populates="product", cascade="all, delete-orphan")
+    sales_items = relationship("SalesOrderItem", back_populates="product", cascade="all, delete-orphan")
+    transactions = relationship("InventoryTransaction", back_populates="product", cascade="all, delete-orphan")
+    forecasts = relationship("ForecastResult", back_populates="product", cascade="all, delete-orphan")
 
 class Supplier(Base):
     __tablename__ = "suppliers"
