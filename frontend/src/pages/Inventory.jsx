@@ -168,7 +168,7 @@ const Inventory = () => {
     setSelectedProduct(p)
     setAdjustQty(10)
     setAdjustReason('Regular Stock Audit')
-    setSelectedWhId(1)
+    setSelectedWhId(warehouses[0]?.id || 1)
     setShowAdjustModal(true)
   }
 
