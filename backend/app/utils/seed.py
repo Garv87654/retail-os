@@ -97,36 +97,8 @@ def seed_database(drop_tables: bool = False):
         
     print("5 Warehouses seeded.")
     
-    # 4. Seed Suppliers
-    payment_terms_list = ["Net 30", "Net 60", "Due on Receipt", "Net 15"]
-    supplier_names = [
-        "Apex Electronics Corp", "VoltTech Global Ltd", "Global Fabrics & Textiles", 
-        "SolarFoods Wholesale", "Pacifica Goods Distributors", "Summit Auto Spares", 
-        "Chronos Watch Manufacturers", "Nordic Home Accessories", "EcoPaper Supply Co", 
-        "Nova Leather Goods", "Aero Components Inc", "Zenith Sportswear Ltd", 
-        "Pioneer Tools Wholesale", "Optima Glassware Corp", "Terra Chemicals", 
-        "Horizon Office Supplies", "Delta Packaging Inc", "Infinity Toys Group", 
-        "Prism Paints & Coatings", "Vanguard Metal Works"
-    ]
+    # 4. Seed Suppliers skipped for clean custom data entry
     db_suppliers = []
-    for i, s_name in enumerate(supplier_names, 1):
-        s = Supplier(
-            name=s_name,
-            email=f"sales@{s_name.lower().replace(' ', '').replace('&', 'and')}.com",
-            phone=f"800-555-{i:04d}",
-            address=f"Industrial Zone Building #{i}, City Center",
-            gst_number=f"GST-{random.randint(10, 99)}ABCDE{random.randint(1000, 9999)}F",
-            payment_terms=random.choice(payment_terms_list),
-            rating=round(random.uniform(3.5, 5.0), 1),
-            delivery_time=random.randint(2, 10),
-            status="Active" if random.random() > 0.1 else "Suspended"
-        )
-        db.add(s)
-        db.commit()
-        db.refresh(s)
-        db_suppliers.append(s)
-        
-    print("20 Suppliers seeded.")
     
     # 5. Seed Categories
     categories = ["Electronics", "Office Supplies", "Home & Kitchen", "Apparel", "Sports & Outdoors"]
@@ -368,4 +340,4 @@ def seed_database(drop_tables: bool = False):
     print("Database seeding completed successfully.")
 
 if __name__ == "__main__":
-    seed_database(drop_tables=False)
+    seed_database(drop_tables=True)
