@@ -5,13 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
-from app.database.session import engine, Base, SessionLocal
+from app.database.session import engine, Base, SessionLocal, get_db
 from app.api import (
     auth, products, warehouses, suppliers, 
     purchase_orders, sales_orders, forecast, 
     ai, reports, logs
 )
-from app.models.models import Role, User
+from app.models.models import Role, User, Product, Warehouse
 from app.utils.seed import seed_database
 
 app = FastAPI(
@@ -59,3 +59,17 @@ def startup_event():
 @app.get("/")
 def read_root():
     return {"message": "Welcome to RetailOS AI Supply Chain API. Access docs at /docs"}
+
+@app.get("/api/db-check")
+def db_check(db: Session = Depends(get_db)):
+    try:
+        bind_url = str(db.bind.url)
+        safe_url = bind_url.split("@")[-1] if "@" in bind_url else bind_url
+        return {
+            "database_type": db.bind.name,
+            "connected_to": safe_url,
+            "products_count": db.query(Product).count(),
+            "warehouses_count": db.query(Warehouse).count()
+        }
+    except Exception as e:
+        return {"error": str(e)}
