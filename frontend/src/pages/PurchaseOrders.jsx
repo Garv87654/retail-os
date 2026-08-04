@@ -195,6 +195,7 @@ const PurchaseOrders = () => {
                       }`}>
                         {po.status}
                       </span>
+                    </td>
                     <td className="px-6 py-4 text-right space-x-2">
                       <button
                         onClick={() => {
