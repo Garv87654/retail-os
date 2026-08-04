@@ -18,6 +18,12 @@ const AuditLogs = () => {
       })
   }, [])
 
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return ''
+    const utcTimestamp = timestamp.endsWith('Z') || timestamp.includes('+') ? timestamp : `${timestamp}Z`
+    return new Date(utcTimestamp).toLocaleString()
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -54,7 +60,7 @@ const AuditLogs = () => {
                 </div>
                 <div className="text-slate-500 text-[10px] sm:text-right shrink-0 flex items-center gap-1.5 self-start">
                   <Calendar size={11} />
-                  {new Date(log.timestamp).toLocaleString()}
+                  {formatTimestamp(log.timestamp)}
                 </div>
               </div>
             ))
