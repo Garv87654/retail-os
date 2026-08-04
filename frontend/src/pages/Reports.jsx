@@ -19,7 +19,9 @@ const Reports = () => {
   }, [])
 
   const downloadReport = (type) => {
-    window.open(`http://localhost:8000/api/reports/export/pdf?report_type=${type}`, '_blank')
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    const token = localStorage.getItem('token')
+    window.open(`${backendUrl}/api/reports/export/pdf?report_type=${type}&token=${token}`, '_blank')
   }
 
   const reportsList = [
