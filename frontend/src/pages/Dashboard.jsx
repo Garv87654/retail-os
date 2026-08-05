@@ -29,12 +29,17 @@ import MetricCard from '../components/MetricCard'
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null)
+  const [warehouses, setWarehouses] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     API.getReportsSummary()
       .then(res => {
         setSummary(res.data)
+        return API.getWarehouses()
+      })
+      .then(res => {
+        setWarehouses(res.data)
         setLoading(false)
       })
       .catch(err => {
@@ -54,13 +59,15 @@ const Dashboard = () => {
     { name: 'Jul', Sales: 9100, Purchases: 5900 }
   ]
 
-  const warehouseUtilizationData = [
-    { name: 'Austin Fulfillment', value: 72 },
-    { name: 'Chicago Hub', value: 45 },
-    { name: 'Seattle Bay', value: 85 },
-    { name: 'Atlanta Depot', value: 60 },
-    { name: 'NYC Urban', value: 92 }
-  ]
+  const warehouseUtilizationData = warehouses.length > 0
+    ? warehouses.map(w => ({ name: w.name, value: Math.round(w.utilization_pct || 0) }))
+    : [
+        { name: 'Austin Fulfillment', value: 72 },
+        { name: 'Chicago Hub', value: 45 },
+        { name: 'Seattle Bay', value: 85 },
+        { name: 'Atlanta Depot', value: 60 },
+        { name: 'NYC Urban', value: 92 }
+      ]
 
   const topSellingProducts = summary?.top_selling_products || [
     { name: 'VoltTech Noise-Canceling Headphones', sales: 450 },
