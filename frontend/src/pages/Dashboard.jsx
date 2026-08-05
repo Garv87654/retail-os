@@ -59,14 +59,19 @@ const Dashboard = () => {
     { name: 'Jul', Sales: 9100, Purchases: 5900 }
   ]
 
+  const hasAnyUtilization = warehouses.some(w => (w.utilization_pct || 0) > 0)
   const warehouseUtilizationData = warehouses.length > 0
-    ? warehouses.map(w => ({ name: w.name, value: Math.round(w.utilization_pct || 0) }))
+    ? warehouses.map(w => ({
+        name: w.name,
+        value: hasAnyUtilization ? Math.max(0, Math.round(w.utilization_pct || 0)) : 1,
+        displayValue: Math.max(0, Math.round(w.utilization_pct || 0))
+      }))
     : [
-        { name: 'Austin Fulfillment', value: 72 },
-        { name: 'Chicago Hub', value: 45 },
-        { name: 'Seattle Bay', value: 85 },
-        { name: 'Atlanta Depot', value: 60 },
-        { name: 'NYC Urban', value: 92 }
+        { name: 'Austin Fulfillment', value: 72, displayValue: 72 },
+        { name: 'Chicago Hub', value: 45, displayValue: 45 },
+        { name: 'Seattle Bay', value: 85, displayValue: 85 },
+        { name: 'Atlanta Depot', value: 60, displayValue: 60 },
+        { name: 'NYC Urban', value: 92, displayValue: 92 }
       ]
 
   const topSellingProducts = summary?.top_selling_products || [
@@ -186,7 +191,7 @@ const Dashboard = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `${value}% Capacity`} />
+                <Tooltip formatter={(value, name, props) => `${props.payload.displayValue ?? value}% Capacity`} />
               </PieChart>
             </ResponsiveContainer>
           </div>
