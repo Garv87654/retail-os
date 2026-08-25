@@ -13,7 +13,7 @@ from app.auth.security import RoleChecker, get_current_user
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
-read_roles = RoleChecker(["Admin", "Warehouse Manager", "Procurement Manager", "Viewer"])
+read_roles = RoleChecker(["Admin", "Warehouse Manager", "Procurement Manager", "Warehouse Staff", "Viewer"])
 
 @router.get("/summary")
 def get_reports_summary(db: Session = Depends(get_db), current_user: User = Depends(read_roles)):
