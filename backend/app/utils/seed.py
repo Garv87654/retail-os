@@ -80,7 +80,6 @@ def seed_database(drop_tables: bool = False):
         if not supplier:
             supplier = Supplier(
                 name="Global Trade Linkers",
-                contact_name="Rohan Sharma",
                 email="sales@globaltrade.com",
                 phone="98765-43210",
                 address="Sector 17, Chandigarh",
