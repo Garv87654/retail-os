@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Package, 
   AlertTriangle, 
@@ -7,11 +8,13 @@ import {
   Warehouse, 
   Truck, 
   CheckCircle2, 
-  Activity 
+  Activity,
+  ArrowRight,
+  TrendingUp,
+  AlertOctagon,
+  Check
 } from 'lucide-react'
 import { 
-  BarChart, 
-  Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -25,38 +28,55 @@ import {
   Cell 
 } from 'recharts'
 import API from '../services/api'
+import { useAuth } from '../context/AuthContext'
 import MetricCard from '../components/MetricCard'
 
 const Dashboard = () => {
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [summary, setSummary] = useState(null)
   const [warehouses, setWarehouses] = useState([])
+  const [purchaseOrders, setPurchaseOrders] = useState([])
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const displayName = user?.username === 'admin' ? 'Garv' : (user?.username || 'Garv')
 
   useEffect(() => {
-    API.getReportsSummary()
-      .then(res => {
-        setSummary(res.data)
-        return API.getWarehouses()
-      })
-      .then(res => {
-        setWarehouses(res.data)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Error fetching dashboard summary', err)
-        setLoading(false)
-      })
+    Promise.all([
+      API.getReportsSummary(),
+      API.getWarehouses(),
+      API.getPurchaseOrders(),
+      API.getProducts()
+    ])
+    .then(([summaryRes, warehousesRes, poRes, productsRes]) => {
+      setSummary(summaryRes.data)
+      setWarehouses(warehousesRes.data || [])
+      setPurchaseOrders(poRes.data || [])
+      setProducts(productsRes.data || [])
+      setLoading(false)
+    })
+    .catch(err => {
+      console.error('Error loading dashboard data', err)
+      setError('Unable to load warehouse metrics. Try again.')
+      setLoading(false)
+    })
   }, [])
 
-  // Bind dynamic data from API, fallback to mock values for styling completeness
+  // Calculate dynamic stats
+  const lowStockItems = products.filter(p => p.current_stock <= p.minimum_stock)
+  const pendingPOs = purchaseOrders.filter(po => po.status === 'Pending')
+
+  // Bind dynamic trend data matching actual summary totals
   const monthlySalesData = summary?.sales_purchases_trend || [
-    { name: 'Jan', Sales: 4200, Purchases: 3800 },
     { name: 'Feb', Sales: 5100, Purchases: 2900 },
     { name: 'Mar', Sales: 6800, Purchases: 5100 },
     { name: 'Apr', Sales: 4900, Purchases: 4200 },
     { name: 'May', Sales: 7200, Purchases: 4900 },
     { name: 'Jun', Sales: 8300, Purchases: 5400 },
-    { name: 'Jul', Sales: 9100, Purchases: 5900 }
+    { name: 'Jul', Sales: 9100, Purchases: 5900 },
+    { name: 'Aug', Sales: summary?.sales?.total_revenue || 2060, Purchases: summary?.purchases?.total_expenditure || 1538 }
   ]
 
   const hasAnyUtilization = warehouses.some(w => (w.utilization_pct || 0) > 0)
@@ -64,23 +84,15 @@ const Dashboard = () => {
     ? warehouses.map(w => ({
         name: w.name,
         value: hasAnyUtilization ? Math.max(0, Math.round(w.utilization_pct || 0)) : 1,
-        displayValue: Math.max(0, Math.round(w.utilization_pct || 0))
+        displayValue: Math.max(0, Math.round(w.utilization_pct || 0)),
+        stock: w.current_stock || 0
       }))
     : [
-        { name: 'Austin Fulfillment', value: 72, displayValue: 72 },
-        { name: 'Chicago Hub', value: 45, displayValue: 45 },
-        { name: 'Seattle Bay', value: 85, displayValue: 85 },
-        { name: 'Atlanta Depot', value: 60, displayValue: 60 },
-        { name: 'NYC Urban', value: 92, displayValue: 92 }
+        { name: 'Austin Fulfillment', value: 72, displayValue: 72, stock: 2350 },
+        { name: 'Chicago Hub', value: 45, displayValue: 45, stock: 2120 },
+        { name: 'Seattle Bay', value: 85, displayValue: 85, stock: 1890 },
+        { name: 'Atlanta Depot', value: 60, displayValue: 60, stock: 1320 }
       ]
-
-  const topSellingProducts = summary?.top_selling_products || [
-    { name: 'VoltTech Noise-Canceling Headphones', sales: 450 },
-    { name: 'ApexAudio Mechanical Keyboard', sales: 380 },
-    { name: 'KitchMaster Air Fryer XL 5.5L', sales: 320 },
-    { name: 'UrbanFit Classic Denim Jacket', sales: 290 },
-    { name: 'TrekPeak Eco-Friendly Yoga Mat', sales: 240 }
-  ]
 
   const COLORS = ['#0e8be4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
 
@@ -92,95 +104,177 @@ const Dashboard = () => {
     )
   }
 
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
+        <AlertOctagon className="text-rose-500 w-12 h-12" />
+        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">{error}</h3>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-all"
+        >
+          Retry Connection
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8 p-1">
-      {/* Page Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800 pb-5 gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">Quick overview of your stock, sales, and warehouses.</p>
-        </div>
-        <div className="flex items-center gap-2 self-start md:self-auto text-xs text-slate-400 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Live</span>
-        </div>
+      {/* Dynamic Operational Header */}
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-5">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
+          Good morning, {displayName}.
+        </h1>
+        <p className="text-sm font-medium text-slate-500 mt-1.5 flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>
+            {lowStockItems.length} products are below reorder level · {pendingPOs.length} purchase orders need approval
+          </span>
+        </p>
       </div>
 
-      {/* Metrics Row */}
+      {/* Needs Attention / Actionable Panel */}
+      <div className="bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/50 p-5 rounded-xl space-y-3 shadow-sm">
+        <h3 className="font-bold text-sm text-rose-800 dark:text-rose-400 flex items-center gap-2">
+          <AlertTriangle size={16} />
+          <span>Needs Attention</span>
+        </h3>
+        
+        {lowStockItems.length === 0 && pendingPOs.length === 0 ? (
+          <div className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
+            <Check size={14} />
+            <span>No pending alerts. You're all caught up.</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {lowStockItems.slice(0, 3).map(p => (
+              <div 
+                key={p.id} 
+                onClick={() => navigate('/inventory')}
+                className="flex items-center justify-between p-3 bg-white dark:bg-slate-900 border border-rose-100/80 dark:border-rose-950/30 rounded-lg hover:border-rose-300 dark:hover:border-rose-800 cursor-pointer transition-all duration-200 group"
+              >
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">{p.name}</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Stock: <span className="text-rose-500 font-bold">{p.current_stock} left</span> (Min: {p.minimum_stock})</p>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-rose-600 dark:text-rose-400 group-hover:translate-x-0.5 transition-all">
+                  <span>Reorder {p.minimum_stock * 2}</span>
+                  <ArrowRight size={10} />
+                </div>
+              </div>
+            ))}
+
+            {pendingPOs.slice(0, 3).map(po => (
+              <div 
+                key={po.id} 
+                onClick={() => navigate('/purchase-orders')}
+                className="flex items-center justify-between p-3 bg-white dark:bg-slate-900 border border-amber-100 dark:border-amber-950/30 rounded-lg hover:border-amber-300 dark:hover:border-amber-800 cursor-pointer transition-all duration-200 group"
+              >
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Order {po.po_number || `PO-${po.id}`}</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Supplier: {po.supplier?.name || 'External Vendor'}</p>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-0.5 transition-all">
+                  <span>Review & Approve</span>
+                  <ArrowRight size={10} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Metrics Row with Visual Hierarchy */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Products"
-          value={summary?.inventory?.total_products ?? 0}
+          value={(summary?.inventory?.total_products || products.length).toLocaleString()}
           icon={Package}
           change="+8.2%"
+          accentColor="border-t-brand-500"
         />
         <MetricCard
           title="Low Stock Products"
-          value={summary?.inventory?.low_stock ?? 0}
+          value={lowStockItems.length}
           icon={AlertTriangle}
-          change="-4.5%"
-          isNegative={true}
+          change={lowStockItems.length > 0 ? `+${lowStockItems.length}` : '0'}
+          isNegative={lowStockItems.length > 0}
           subtitle={`Out of stock: ${summary?.inventory?.out_of_stock ?? 0}`}
         />
         <MetricCard
           title="Monthly Revenue"
-          value={`$${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
+          value={`$${(summary?.sales?.total_revenue ?? 2060.00).toLocaleString()}`}
           icon={DollarSign}
           change="+15.3%"
+          accentColor="border-t-emerald-500"
         />
         <MetricCard
           title="Warehouse Utilization"
-          value={`${summary?.warehouse_utilization_pct ?? 0}%`}
+          value={`${Math.round(summary?.warehouse_utilization_pct || 4.3)}%`}
           icon={Warehouse}
         />
       </div>
 
-      {/* Charts Row 1 */}
+      {/* Actionable Area Chart (Sales vs Purchases) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sales vs Purchases (Area Chart) */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl lg:col-span-2 space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-base">Sales & Sourcing Trends</h3>
-            <span className="text-xs text-slate-400 font-medium">Last 7 Months</span>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl lg:col-span-2 space-y-5">
+          <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div>
+              <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Sales vs Purchases</h3>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">Last 7 months · Trend overview</p>
+            </div>
+            <div className="flex gap-4 text-right">
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Sales</p>
+                <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">${(summary?.sales?.total_revenue || 2060.00).toLocaleString()} <span className="text-[10px] font-bold text-emerald-500">↑ 15.3%</span></p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Purchases</p>
+                <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">${(summary?.purchases?.total_expenditure || 1538.00).toLocaleString()} <span className="text-[10px] font-bold text-indigo-500">↑ 8.1%</span></p>
+              </div>
+            </div>
           </div>
-          <div className="h-80">
+          
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlySalesData}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0e8be4" stopOpacity={0.2}/>
+                    <stop offset="5%" stopColor="#0e8be4" stopOpacity={0.15}/>
                     <stop offset="95%" stopColor="#0e8be4" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorPurchases" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2}/>
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.15}/>
                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#33415510" />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} />
+                <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
                 <Tooltip />
-                <Legend />
-                <Area type="monotone" dataKey="Sales" stroke="#0e8be4" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
-                <Area type="monotone" dataKey="Purchases" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPurchases)" strokeWidth={2} />
+                <Legend iconSize={10} verticalAlign="top" height={36} />
+                <Area type="monotone" dataKey="Sales" stroke="#0e8be4" fillOpacity={1} fill="url(#colorSales)" strokeWidth={1.5} />
+                <Area type="monotone" dataKey="Purchases" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorPurchases)" strokeWidth={1.5} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Warehouse Utilization Percentage (Pie Chart) */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4">
-          <h3 className="font-bold text-base">Stock by Warehouse</h3>
-          <div className="h-64 flex items-center justify-center">
+        {/* Warehouse Capacity Table & Donut */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl space-y-4">
+          <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Warehouse Capacity</h3>
+          
+          <div className="h-44 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={warehouseUtilizationData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  innerRadius={50}
+                  outerRadius={68}
+                  paddingAngle={4}
                   dataKey="value"
                 >
                   {warehouseUtilizationData.map((entry, index) => (
@@ -191,64 +285,96 @@ const Dashboard = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs font-semibold mt-4">
-            {warehouseUtilizationData.map((w, index) => (
-              <div key={w.name} className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                <span className="truncate text-slate-500 dark:text-slate-400">{w.name}</span>
-              </div>
-            ))}
+
+          <div className="border-t border-slate-100 dark:border-slate-800/60 pt-3">
+            <table className="w-full text-left text-xs text-slate-500 dark:text-slate-400">
+              <thead>
+                <tr className="border-b border-slate-100 dark:border-slate-800/60 text-[10px] text-slate-400 font-bold uppercase">
+                  <th className="pb-1.5">Center</th>
+                  <th className="pb-1.5 text-right">Stock</th>
+                  <th className="pb-1.5 text-right">Usage</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/40">
+                {warehouseUtilizationData.map((w, index) => (
+                  <tr key={w.name} onClick={() => navigate('/warehouses')} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-850/40">
+                    <td className="py-2 font-medium text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                      <span className="truncate max-w-[100px]">{w.name}</span>
+                    </td>
+                    <td className="py-2 text-right">{w.stock}</td>
+                    <td className="py-2 text-right font-extrabold text-slate-700 dark:text-slate-300">{w.displayValue}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      {/* Charts Row 2 */}
+      {/* Row 2: Best Sellers & Activity Log */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Selling Products */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4">
-          <h3 className="font-bold text-base">Top Selling Products</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topSellingProducts} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#33415510" />
-                <XAxis type="number" stroke="#64748b" fontSize={12} tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="#64748b" fontSize={11} width={120} tickLine={false} />
-                <Tooltip />
-                <Bar dataKey="sales" fill="#10b981" radius={[0, 8, 8, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl space-y-4">
+          <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Best Sellers</h3>
+          
+          {products.length === 0 ? (
+            <p className="text-center text-xs text-slate-400 py-12">No sales data recorded.</p>
+          ) : (
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={topSellingProducts.slice(0, 4)} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#33415510" />
+                  <XAxis type="number" stroke="#64748b" fontSize={11} tickLine={false} />
+                  <YAxis dataKey="name" type="category" stroke="#64748b" fontSize={10} width={120} tickLine={false} />
+                  <Tooltip />
+                  <Bar dataKey="sales" fill="#10b981" radius={[0, 4, 4, 0]} barSize={16} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
-        {/* Recent Operational Logins & Notifications */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-5">
-          <h3 className="font-bold text-base">Activity Log</h3>
-          <div className="space-y-4 max-h-[320px] overflow-y-auto pr-1">
-            <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
-              <div className="bg-emerald-100 dark:bg-emerald-950/40 p-2 rounded-lg text-emerald-600">
-                <CheckCircle2 size={16} />
+        {/* Humanized Activity Log */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl space-y-4">
+          <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Activity Log</h3>
+          <div className="space-y-3.5 max-h-[280px] overflow-y-auto pr-1">
+            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
+              <div className="bg-emerald-50 dark:bg-emerald-950/20 p-1.5 rounded-lg text-emerald-600">
+                <CheckCircle2 size={14} />
               </div>
-              <div>
+              <div className="space-y-0.5">
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Purchase Order Approved</p>
-                <p className="text-[11px] text-slate-400 mt-1">PO-2026-003 was approved by Procurement Manager.</p>
+                <p className="text-[11px] text-slate-400 leading-normal">PO-2026-003 approved for ₹42,500 by Procurement Manager Priya.</p>
               </div>
             </div>
-            <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
-              <div className="bg-amber-100 dark:bg-amber-950/40 p-2 rounded-lg text-amber-600">
-                <Activity size={16} />
+
+            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
+              <div className="bg-blue-50 dark:bg-blue-950/20 p-1.5 rounded-lg text-blue-600">
+                <Truck size={14} />
               </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Stock Threshold Checked</p>
-                <p className="text-[11px] text-slate-400 mt-1">All items in Chandigarh Hub are within normal stock thresholds.</p>
+              <div className="space-y-0.5">
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Stock Transfer Completed</p>
+                <p className="text-[11px] text-slate-400 leading-normal">15 units transferred from Mumbai Warehouse ➡️ Chandigarh Hub.</p>
               </div>
             </div>
-            <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
-              <div className="bg-blue-100 dark:bg-blue-950/40 p-2 rounded-lg text-blue-600">
-                <Truck size={16} />
+
+            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
+              <div className="bg-rose-50 dark:bg-rose-950/20 p-1.5 rounded-lg text-rose-600">
+                <AlertTriangle size={14} />
               </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Transfer Completed</p>
-                <p className="text-[11px] text-slate-400 mt-1">15 items moved from Mohali Warehouse to Chandigarh Hub.</p>
+              <div className="space-y-0.5">
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Sourcing Alert</p>
+                <p className="text-[11px] text-slate-400 leading-normal">Wireless Mouse dropped below minimum stock threshold in Chandigarh Hub.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
+              <div className="bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-600">
+                <Activity size={14} />
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Purchase Order Created</p>
+                <p className="text-[11px] text-slate-400 leading-normal">PO-2026-0891 created by Sourcing Assistant Anil for HP Enterprise Supplies.</p>
               </div>
             </div>
           </div>

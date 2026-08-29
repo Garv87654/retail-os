@@ -17,19 +17,37 @@ import { useAuth } from '../context/AuthContext'
 const Sidebar = () => {
   const { logout, role } = useAuth()
 
-  const links = [
-    { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/inventory', label: 'Inventory', icon: Package, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/warehouses', label: 'Warehouses', icon: Warehouse, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/suppliers', label: 'Suppliers', icon: Truck, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/purchase-orders', label: 'Purchase Orders', icon: ShoppingBag, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] },
-    { to: '/sales-orders', label: 'Sales Orders', icon: TrendingUp, roles: ['Admin', 'Warehouse Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/reports', label: 'Reports', icon: FileText, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] },
-    { to: '/ai-chat', label: 'AI Assistant', icon: MessageSquare, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-    { to: '/audit-logs', label: 'Audit Logs', icon: ShieldAlert, roles: ['Admin'] }
+  const groups = [
+    {
+      title: 'OPERATIONS',
+      links: [
+        { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
+        { to: '/inventory', label: 'Inventory', icon: Package, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
+        { to: '/warehouses', label: 'Warehouses', icon: Warehouse, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
+        { to: '/suppliers', label: 'Suppliers', icon: Truck, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] }
+      ]
+    },
+    {
+      title: 'ORDERS',
+      links: [
+        { to: '/purchase-orders', label: 'Purchase Orders', icon: ShoppingBag, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] },
+        { to: '/sales-orders', label: 'Sales Orders', icon: TrendingUp, roles: ['Admin', 'Warehouse Manager', 'Warehouse Staff', 'Viewer'] }
+      ]
+    },
+    {
+      title: 'INSIGHTS',
+      links: [
+        { to: '/reports', label: 'Reports', icon: FileText, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] }
+      ]
+    },
+    {
+      title: 'SYSTEM',
+      links: [
+        { to: '/ai-chat', label: 'Ask RetailOS', icon: MessageSquare, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
+        { to: '/audit-logs', label: 'Audit Logs', icon: ShieldAlert, roles: ['Admin'] }
+      ]
+    }
   ]
-
-  const filteredLinks = links.filter(link => link.roles.includes(role))
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col h-full border-r border-slate-800">
@@ -47,24 +65,36 @@ const Sidebar = () => {
       </div>
 
       {/* Nav Links */}
-      <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-        {filteredLinks.map((link) => {
-          const Icon = link.icon
+      <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
+        {groups.map((group) => {
+          const visibleLinks = group.links.filter(link => link.roles.includes(role))
+          if (visibleLinks.length === 0) return null
+
           return (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) => 
-                `flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' 
-                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
-                }`
-              }
-            >
-              <Icon size={18} />
-              <span>{link.label}</span>
-            </NavLink>
+            <div key={group.title} className="space-y-1">
+              <span className="text-[9px] font-bold text-slate-500 tracking-wider px-4 block uppercase mb-1.5">
+                {group.title}
+              </span>
+              {visibleLinks.map((link) => {
+                const Icon = link.icon
+                return (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    className={({ isActive }) => 
+                      `flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        isActive 
+                          ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' 
+                          : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                      }`
+                    }
+                  >
+                    <Icon size={18} />
+                    <span>{link.label}</span>
+                  </NavLink>
+                )
+              })}
+            </div>
           )
         })}
       </nav>
