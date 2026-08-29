@@ -166,7 +166,7 @@ def seed_database(drop_tables: bool = False):
             wh_inv = WarehouseInventory(
                 warehouse_id=target_wh.id,
                 product_id=prod.id,
-                quantity=prod.current_stock
+                current_stock=prod.current_stock
             )
             db.add(wh_inv)
             
