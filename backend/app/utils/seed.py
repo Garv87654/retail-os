@@ -26,6 +26,7 @@ def seed_database(drop_tables: bool = False):
                 db.close()
                 return
         except Exception:
+            db.rollback()
             Base.metadata.create_all(bind=engine)
     
     # 1. Seed Roles & Permissions
