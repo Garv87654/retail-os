@@ -176,7 +176,7 @@ def seed_database(drop_tables: bool = False):
                 warehouse_id=target_wh.id,
                 transaction_type="ADD",
                 quantity=prod.current_stock,
-                reference_number="INITIAL_SEED",
+                reference_id="INITIAL_SEED",
                 timestamp=datetime.utcnow()
             )
             db.add(tx)
