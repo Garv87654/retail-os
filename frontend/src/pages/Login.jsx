@@ -127,37 +127,14 @@ const Login = () => {
 
             {/* Quick Demo Logins */}
             <div className="mt-8 pt-6 border-t border-slate-700/60">
-              <span className="block text-center text-xs text-slate-500 font-medium mb-3">Quick Login (Demo Roles)</span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleDemoUser('admin')}
-                  className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-[11px] font-semibold rounded-lg text-slate-300 transition-all duration-200"
-                >
-                  Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoUser('w_manager')}
-                  className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-[11px] font-semibold rounded-lg text-slate-300 transition-all duration-200"
-                >
-                  Warehouse Mgr
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoUser('p_manager')}
-                  className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-[11px] font-semibold rounded-lg text-slate-300 transition-all duration-200"
-                >
-                  Procurement Mgr
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDemoUser('staff')}
-                  className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-[11px] font-semibold rounded-lg text-slate-300 transition-all duration-200"
-                >
-                  Warehouse Staff
-                </button>
-              </div>
+              <span className="block text-center text-xs text-slate-500 font-medium mb-3">Quick Demo Login</span>
+              <button
+                type="button"
+                onClick={() => handleDemoUser('admin')}
+                className="w-full py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-xs font-semibold rounded-lg text-slate-300 transition-all duration-200"
+              >
+                Auto-fill Admin Credentials
+              </button>
             </div>
           </form>
         ) : (

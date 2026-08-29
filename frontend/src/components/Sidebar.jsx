@@ -21,30 +21,30 @@ const Sidebar = () => {
     {
       title: 'OPERATIONS',
       links: [
-        { to: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-        { to: '/inventory', label: 'Inventory', icon: Package, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-        { to: '/warehouses', label: 'Warehouses', icon: Warehouse, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-        { to: '/suppliers', label: 'Suppliers', icon: Truck, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] }
+        { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+        { to: '/inventory', label: 'Inventory', icon: Package },
+        { to: '/warehouses', label: 'Warehouses', icon: Warehouse },
+        { to: '/suppliers', label: 'Suppliers', icon: Truck }
       ]
     },
     {
       title: 'ORDERS',
       links: [
-        { to: '/purchase-orders', label: 'Purchase Orders', icon: ShoppingBag, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] },
-        { to: '/sales-orders', label: 'Sales Orders', icon: TrendingUp, roles: ['Admin', 'Warehouse Manager', 'Warehouse Staff', 'Viewer'] }
+        { to: '/purchase-orders', label: 'Purchase Orders', icon: ShoppingBag },
+        { to: '/sales-orders', label: 'Sales Orders', icon: TrendingUp }
       ]
     },
     {
       title: 'INSIGHTS',
       links: [
-        { to: '/reports', label: 'Reports', icon: FileText, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Viewer'] }
+        { to: '/reports', label: 'Reports', icon: FileText }
       ]
     },
     {
       title: 'SYSTEM',
       links: [
-        { to: '/ai-chat', label: 'Ask RetailOS', icon: MessageSquare, roles: ['Admin', 'Warehouse Manager', 'Procurement Manager', 'Warehouse Staff', 'Viewer'] },
-        { to: '/audit-logs', label: 'Audit Logs', icon: ShieldAlert, roles: ['Admin'] }
+        { to: '/ai-chat', label: 'Ask RetailOS', icon: MessageSquare },
+        { to: '/audit-logs', label: 'Audit Logs', icon: ShieldAlert }
       ]
     }
   ]
@@ -67,15 +67,12 @@ const Sidebar = () => {
       {/* Nav Links */}
       <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
         {groups.map((group) => {
-          const visibleLinks = group.links.filter(link => link.roles.includes(role))
-          if (visibleLinks.length === 0) return null
-
           return (
             <div key={group.title} className="space-y-1">
               <span className="text-[9px] font-bold text-slate-500 tracking-wider px-4 block uppercase mb-1.5">
                 {group.title}
               </span>
-              {visibleLinks.map((link) => {
+              {group.links.map((link) => {
                 const Icon = link.icon
                 return (
                   <NavLink
