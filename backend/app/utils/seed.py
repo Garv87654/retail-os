@@ -69,34 +69,9 @@ def seed_database(drop_tables: bool = False):
     db.commit()
     print("Users seeded.")
     
-    # 3. Seed Warehouses
-    warehouses_data = [
-        {"name": "Austin Fulfillment Center", "city": "Austin", "state": "TX", "capacity": 10000, "manager": "John Doe", "phone": "512-555-0199", "email": "austin@retailos.com"},
-        {"name": "Chicago Logistics Hub", "city": "Chicago", "state": "IL", "capacity": 15000, "manager": "Jane Smith", "phone": "312-555-0144", "email": "chicago@retailos.com"},
-        {"name": "Seattle Bay Warehouse", "city": "Seattle", "state": "WA", "capacity": 8000, "manager": "Bob Johnson", "phone": "206-555-0188", "email": "seattle@retailos.com"},
-        {"name": "Atlanta Distribution Depot", "city": "Atlanta", "state": "GA", "capacity": 12000, "manager": "Sarah Davis", "phone": "404-555-0177", "email": "atlanta@retailos.com"},
-        {"name": "New York Urban Center", "city": "New York", "state": "NY", "capacity": 6000, "manager": "Mike Wilson", "phone": "212-555-0122", "email": "nyc@retailos.com"}
-    ]
-    
+    # 3. Seed Warehouses skipped for clean custom data entry
     db_warehouses = []
-    for w in warehouses_data:
-        wh = Warehouse(
-            name=w["name"],
-            address=f"100 {w['name']} St",
-            city=w["city"],
-            state=w["state"],
-            country="USA",
-            capacity=w["capacity"],
-            manager_name=w["manager"],
-            phone=w["phone"],
-            email=w["email"]
-        )
-        db.add(wh)
-        db.commit()
-        db.refresh(wh)
-        db_warehouses.append(wh)
-        
-    print("5 Warehouses seeded.")
+    print("Warehouse seeding skipped.")
     
     # 4. Seed Suppliers skipped for clean custom data entry
     db_suppliers = []
