@@ -97,15 +97,12 @@ const Dashboard = () => {
       {/* Page Title Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800 pb-5 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">Analytics Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">Real-time oversight of retail supply chain operations, demand metrics, and logistics KPIs.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-1">Quick overview of your stock, sales, and warehouses.</p>
         </div>
-        <div className="flex items-center gap-3 self-start md:self-auto">
-          <div className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg text-xs font-bold flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Live Sync: Connected
-          </div>
-          <span className="text-[11px] text-slate-400 font-medium">Last synced: Just now</span>
+        <div className="flex items-center gap-2 self-start md:self-auto text-xs text-slate-400 font-medium">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Live</span>
         </div>
       </div>
 
@@ -135,7 +132,6 @@ const Dashboard = () => {
           title="Warehouse Utilization"
           value={`${summary?.warehouse_utilization_pct ?? 0}%`}
           icon={Warehouse}
-          subtitle="Seeded: 5 centers active"
         />
       </div>
 
@@ -144,8 +140,8 @@ const Dashboard = () => {
         {/* Sales vs Purchases (Area Chart) */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl lg:col-span-2 space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-base">Monthly Sales & Expenditure Trend</h3>
-            <span className="text-xs text-slate-400 font-medium">USD - Last 7 Months</span>
+            <h3 className="font-bold text-base">Sales & Sourcing Trends</h3>
+            <span className="text-xs text-slate-400 font-medium">Last 7 Months</span>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -174,7 +170,7 @@ const Dashboard = () => {
 
         {/* Warehouse Utilization Percentage (Pie Chart) */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4">
-          <h3 className="font-bold text-base">Warehouse Stock Loading</h3>
+          <h3 className="font-bold text-base">Stock by Warehouse</h3>
           <div className="h-64 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -226,7 +222,7 @@ const Dashboard = () => {
 
         {/* Recent Operational Logins & Notifications */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-5">
-          <h3 className="font-bold text-base">System Operational Logs</h3>
+          <h3 className="font-bold text-base">Activity Log</h3>
           <div className="space-y-4 max-h-[320px] overflow-y-auto pr-1">
             <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
               <div className="bg-emerald-100 dark:bg-emerald-950/40 p-2 rounded-lg text-emerald-600">
@@ -234,7 +230,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Purchase Order Approved</p>
-                <p className="text-[11px] text-slate-400 mt-1">PO-SEED-2026020 was approved by admin. Delivery expected tomorrow.</p>
+                <p className="text-[11px] text-slate-400 mt-1">PO-2026-003 was approved by Procurement Manager.</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
@@ -242,8 +238,8 @@ const Dashboard = () => {
                 <Activity size={16} />
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">XGBoost Forecast Recalculated</p>
-                <p className="text-[11px] text-slate-400 mt-1">Weekly forecast re-run successfully completed for 100 products.</p>
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Stock Threshold Checked</p>
+                <p className="text-[11px] text-slate-400 mt-1">All items in Chandigarh Hub are within normal stock thresholds.</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-xl transition-all duration-200">
@@ -251,8 +247,8 @@ const Dashboard = () => {
                 <Truck size={16} />
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Transfer Complete</p>
-                <p className="text-[11px] text-slate-400 mt-1">20 units of VoltTech Noise-Canceling Headphones transferred from Chicago to Seattle.</p>
+                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Transfer Completed</p>
+                <p className="text-[11px] text-slate-400 mt-1">15 items moved from Mohali Warehouse to Chandigarh Hub.</p>
               </div>
             </div>
           </div>
