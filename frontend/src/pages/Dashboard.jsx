@@ -26,7 +26,9 @@ import {
   Area, 
   PieChart, 
   Pie, 
-  Cell 
+  Cell,
+  BarChart,
+  Bar
 } from 'recharts'
 import API from '../services/api'
 import { useAuth } from '../context/AuthContext'
