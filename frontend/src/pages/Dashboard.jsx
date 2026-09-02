@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [warehouses, setWarehouses] = useState([])
   const [purchaseOrders, setPurchaseOrders] = useState([])
   const [products, setProducts] = useState([])
+  const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -51,13 +52,15 @@ const Dashboard = () => {
       API.getReportsSummary(),
       API.getWarehouses(),
       API.getPurchaseOrders(),
-      API.getProducts()
+      API.getProducts(),
+      API.getAuditLogs()
     ])
-    .then(([summaryRes, warehousesRes, poRes, productsRes]) => {
+    .then(([summaryRes, warehousesRes, poRes, productsRes, logsRes]) => {
       setSummary(summaryRes.data)
       setWarehouses(warehousesRes.data || [])
       setPurchaseOrders(poRes.data || [])
       setProducts(productsRes.data || [])
+      setLogs(logsRes.data || [])
       setLoading(false)
     })
     .catch(err => {
@@ -350,49 +353,47 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Humanized Activity Log */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl space-y-4">
           <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Activity Log</h3>
           <div className="space-y-3.5 max-h-[280px] overflow-y-auto pr-1">
-            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
-              <div className="bg-emerald-50 dark:bg-emerald-950/20 p-1.5 rounded-lg text-emerald-600">
-                <CheckCircle2 size={14} />
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Purchase Order Approved</p>
-                <p className="text-[11px] text-slate-400 leading-normal">PO-2026-003 approved for ₹42,500 by Procurement Manager Priya.</p>
-              </div>
-            </div>
+            {logs.length === 0 ? (
+              <p className="text-xs text-slate-400 italic">No recent activity.</p>
+            ) : (
+              logs.slice(0, 10).map((log, idx) => {
+                let Icon = Activity;
+                let colorClass = "text-slate-600 bg-slate-50 dark:bg-slate-900/20";
+                
+                if (log.action.includes('Create') || log.action.includes('Approve')) {
+                  Icon = CheckCircle2;
+                  colorClass = "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20";
+                } else if (log.action.includes('Delete') || log.action.includes('Reject')) {
+                  Icon = AlertTriangle;
+                  colorClass = "text-rose-600 bg-rose-50 dark:bg-rose-950/20";
+                } else if (log.action.includes('Update') || log.action.includes('Transfer')) {
+                  Icon = Truck;
+                  colorClass = "text-blue-600 bg-blue-50 dark:bg-blue-950/20";
+                }
 
-            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
-              <div className="bg-blue-50 dark:bg-blue-950/20 p-1.5 rounded-lg text-blue-600">
-                <Truck size={14} />
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Stock Transfer Completed</p>
-                <p className="text-[11px] text-slate-400 leading-normal">15 units transferred from Mumbai Warehouse ➡️ Chandigarh Hub.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
-              <div className="bg-rose-50 dark:bg-rose-950/20 p-1.5 rounded-lg text-rose-600">
-                <AlertTriangle size={14} />
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Inventory Sourcing Alert</p>
-                <p className="text-[11px] text-slate-400 leading-normal">Wireless Mouse dropped below minimum stock threshold in Chandigarh Hub.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
-              <div className="bg-amber-50 dark:bg-amber-950/20 p-1.5 rounded-lg text-amber-600">
-                <Activity size={14} />
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Purchase Order Created</p>
-                <p className="text-[11px] text-slate-400 leading-normal">PO-2026-0891 created by Sourcing Assistant Anil for HP Enterprise Supplies.</p>
-              </div>
-            </div>
+                return (
+                  <div key={log.id || idx} className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
+                    <div className={`p-1.5 rounded-lg ${colorClass}`}>
+                      <Icon size={14} />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        {log.action} {log.entity_type && `- ${log.entity_type}`}
+                      </p>
+                      <p className="text-[11px] text-slate-400 leading-normal">
+                        {log.details || `Action performed on ${log.entity_type} #${log.entity_id}`}
+                        <span className="block mt-0.5 opacity-60">
+                          {new Date(log.timestamp).toLocaleString()}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
       </div>
