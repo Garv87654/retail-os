@@ -89,15 +89,6 @@ def get_reports_summary(db: Session = Depends(get_db), current_user: User = Depe
     if top_selling_query:
         for name, qty in top_selling_query:
             formatted_top_products.append({"name": name, "sales": int(qty)})
-    else:
-        # Fallback to realistic mock values
-        formatted_top_products = [
-            {"name": "VoltTech Noise-Canceling Headphones", "sales": 450},
-            {"name": "ApexAudio Mechanical Keyboard", "sales": 380},
-            {"name": "KitchMaster Air Fryer XL 5.5L", "sales": 320},
-            {"name": "UrbanFit Classic Denim Jacket", "sales": 290},
-            {"name": "TrekPeak Eco-Friendly Yoga Mat", "sales": 240}
-        ]
     
     return {
         "inventory": {

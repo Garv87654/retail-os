@@ -329,21 +329,16 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-xl space-y-4">
           <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Best Sellers</h3>
           
-          {products.length === 0 ? (
+          {(!summary?.top_selling_products || summary.top_selling_products.length === 0) ? (
             <div className="h-72 flex flex-col items-center justify-center text-center p-6 space-y-2 border border-dashed border-slate-200 dark:border-slate-850 rounded-xl">
               <Package className="text-slate-300 dark:text-slate-700 w-8 h-8" />
-              <p className="text-xs font-semibold text-slate-500">No products registered</p>
-              <button 
-                onClick={() => navigate('/inventory')}
-                className="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-brand-600 dark:text-slate-200 rounded text-[10px] font-bold flex items-center gap-1 transition-all"
-              >
-                <Plus size={10} /> Add Product
-              </button>
+              <p className="text-xs font-semibold text-slate-500">No sales recorded yet</p>
+              <p className="text-[10px] text-slate-400">Complete a Sales Order to see your best sellers here.</p>
             </div>
           ) : (
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={products.slice(0, 4).map(p => ({ name: p.name, sales: p.sales_count || 0 }))} layout="vertical">
+                <BarChart data={summary.top_selling_products} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#33415510" />
                   <XAxis type="number" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis dataKey="name" type="category" stroke="#64748b" fontSize={10} width={120} tickLine={false} />
