@@ -188,6 +188,30 @@ const Inventory = () => {
     }
   }
 
+  const handleForecastClick = (p) => {
+    setSelectedProduct(p)
+    setSelectedWhId(warehouses[0]?.id || 1)
+    setForecastHorizon('week')
+    setForecastData(null)
+    setShowForecastModal(true)
+  }
+
+  const handleForecastSubmit = async (e) => {
+    e.preventDefault()
+    setLoadingForecast(true)
+    try {
+      const res = await API.getForecast({
+        product_id: selectedProduct.id,
+        warehouse_id: parseInt(selectedWhId)
+      }, forecastHorizon)
+      setForecastData(res.data)
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Forecast generation failed.')
+    } finally {
+      setLoadingForecast(false)
+    }
+  }
+
   const handleCsvExport = () => {
     window.open('http://localhost:8000/api/products/export/csv', '_blank')
   }
@@ -345,13 +369,22 @@ const Inventory = () => {
                     </td>
                     <td className="px-6 py-4 text-right space-x-2.5">
                       {isStaff && (
-                        <button
-                          onClick={() => handleAdjustClick(p)}
-                          className="text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                          title="Adjust Stock"
-                        >
-                          <Sliders size={14} />
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleAdjustClick(p)}
+                            className="text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                            title="Adjust Stock"
+                          >
+                            <Sliders size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleForecastClick(p)}
+                            className="text-slate-400 hover:text-brand-500"
+                            title="AI Demand Forecast"
+                          >
+                            <TrendingUp size={14} />
+                          </button>
+                        </>
                       )}
                       {isWriter && (
                         <>
@@ -495,6 +528,70 @@ const Inventory = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Forecast Demand Modal */}
+      {showForecastModal && (
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 relative">
+            <button onClick={() => setShowForecastModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-200">
+              <X size={18} />
+            </button>
+            <div className="flex items-center gap-2 mb-1 text-brand-600">
+              <TrendingUp size={20} />
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">AI Demand Forecast</h3>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">Run XGBoost ML model to predict future demand for this product.</p>
+            
+            <form onSubmit={handleForecastSubmit} className="space-y-4 text-xs font-semibold">
+              <div>
+                <label className="block text-slate-400 mb-1">Product</label>
+                <input type="text" disabled value={selectedProduct?.name} className="w-full p-2 bg-slate-100 dark:bg-slate-800/60 border dark:border-slate-700 rounded-lg" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-400 mb-1">Target Warehouse</label>
+                  <select value={selectedWhId} onChange={(e) => setSelectedWhId(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg">
+                    {warehouses.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">Time Horizon</label>
+                  <select value={forecastHorizon} onChange={(e) => setForecastHorizon(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg">
+                    <option value="week">Next 7 Days</option>
+                    <option value="month">Next 30 Days</option>
+                    <option value="quarter">Next 90 Days</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="pt-2">
+                <button type="submit" disabled={loadingForecast} className="w-full py-2.5 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white font-bold rounded-lg shadow-md flex items-center justify-center gap-2">
+                  {loadingForecast ? 'Running Model...' : 'Generate Forecast'}
+                </button>
+              </div>
+            </form>
+
+            {forecastData && (
+              <div className="mt-6 p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 rounded-xl space-y-3">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-500">Predicted Demand</p>
+                    <p className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">{forecastData.predicted_demand} <span className="text-sm font-medium">units</span></p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase font-bold text-slate-500">Confidence</p>
+                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{(forecastData.confidence * 100).toFixed(1)}%</p>
+                  </div>
+                </div>
+                <div className="pt-3 border-t border-emerald-100 dark:border-emerald-900/50">
+                  <p className="text-xs font-medium text-emerald-800 dark:text-emerald-300 leading-relaxed">
+                    <strong>AI Recommendation:</strong> {forecastData.recommendation}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
