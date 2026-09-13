@@ -73,13 +73,12 @@ def get_current_user(
 
 class RoleChecker:
     def __init__(self, allowed_roles: List[str]):
-        # Enforce Admin-only access system-wide for simplified presentation
-        self.allowed_roles = ["Admin"]
+        self.allowed_roles = allowed_roles
 
     def __call__(self, current_user: User = Depends(get_current_user)) -> User:
-        if not current_user.role or current_user.role.name != "Admin":
+        if not current_user.role or current_user.role.name not in self.allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Operation not permitted. Admin access required.",
+                detail=f"Operation not permitted. Required role: {', '.join(self.allowed_roles)}",
             )
         return current_user
