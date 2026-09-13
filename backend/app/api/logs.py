@@ -10,9 +10,9 @@ from app.auth.security import RoleChecker, get_current_user
 
 router = APIRouter(prefix="/logs", tags=["logs"])
 
-admin_roles = RoleChecker(["Admin"])
+read_roles = RoleChecker(["Admin", "Warehouse Manager", "Procurement Manager", "Warehouse Staff"])
 
 @router.get("/", response_model=List[AuditLogResponse])
-def get_audit_logs(db: Session = Depends(get_db), current_user: User = Depends(admin_roles)):
+def get_audit_logs(db: Session = Depends(get_db), current_user: User = Depends(read_roles)):
     logs = db.query(AuditLog).order_by(desc(AuditLog.timestamp)).limit(200).all()
     return logs
