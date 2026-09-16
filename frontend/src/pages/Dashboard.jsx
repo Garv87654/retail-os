@@ -118,12 +118,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
           Good morning, {displayName}.
         </h1>
-        <p className="text-sm font-medium text-slate-500 mt-1.5 flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-brand-500"></span>
-          <span>
-            {lowStockItems.length} products are below reorder level · {pendingPOs.length} purchase orders need approval
-          </span>
-        </p>
+
       </div>
 
       {/* Needs Attention / Actionable Panel */}
