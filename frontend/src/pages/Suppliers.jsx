@@ -123,7 +123,7 @@ const Suppliers = () => {
             <div
               key={s.id}
               onClick={() => handleSupplierClick(s)}
-              className={`p-5 bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-md transition-all duration-200 ${
+              className={`p-5 bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-md transition-all duration-200 ₹{
                 activeSup?.id === s.id 
                   ? 'border-brand-500 ring-2 ring-brand-500/10' 
                   : 'border-slate-200 dark:border-slate-800'
@@ -134,7 +134,7 @@ const Suppliers = () => {
                   <h3 className="font-bold text-sm tracking-tight text-slate-800 dark:text-slate-100 truncate" title={s.name}>{s.name}</h3>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-extrabold ${
+                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-extrabold ₹{
                     s.status === 'Active' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
                   }`}>
                     {s.status}
@@ -201,7 +201,7 @@ const Suppliers = () => {
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl space-y-1">
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">Late Deliveries</span>
-                  <p className={`text-xl font-bold ${perfData.late_deliveries > 0 ? 'text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
+                  <p className={`text-xl font-bold ₹{perfData.late_deliveries > 0 ? 'text-amber-500' : 'text-slate-700 dark:text-slate-300'}`}>
                     {perfData.late_deliveries} orders
                   </p>
                 </div>
@@ -236,7 +236,7 @@ const Suppliers = () => {
                           <tr key={po.id}>
                             <td className="px-4 py-2.5 font-mono text-slate-400">{po.order_number}</td>
                             <td className="px-4 py-2.5">{new Date(po.created_at).toLocaleDateString()}</td>
-                            <td className="px-4 py-2.5 font-bold">${po.grand_total.toFixed(2)}</td>
+                            <td className="px-4 py-2.5 font-bold">₹{po.grand_total.toFixed(2)}</td>
                             <td className="px-4 py-2.5">
                               <span className="text-[10px] font-bold uppercase tracking-wider">{po.status}</span>
                             </td>

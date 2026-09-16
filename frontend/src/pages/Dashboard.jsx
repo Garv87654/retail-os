@@ -187,18 +187,18 @@ const Dashboard = () => {
           icon={AlertTriangle}
           change={lowStockItems.length > 0 ? `+${lowStockItems.length}` : null}
           isNegative={lowStockItems.length > 0}
-          subtitle={`Out of stock: ${products.filter(p => p.current_stock === 0).length}`}
+          subtitle={`Out of stock: ₹{products.filter(p => p.current_stock === 0).length}`}
         />
         <MetricCard
           title="Monthly Revenue"
-          value={`$${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
+          value={`₹${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
           icon={DollarSign}
           change={summary?.sales?.total_revenue > 0 ? "+15.3%" : null}
           accentColor="border-t-emerald-500"
         />
         <MetricCard
           title="Warehouse Utilization"
-          value={`${Math.round(summary?.warehouse_utilization_pct ?? 0)}%`}
+          value={`₹{Math.round(summary?.warehouse_utilization_pct ?? 0)}%`}
           icon={Warehouse}
         />
       </div>
@@ -254,15 +254,15 @@ const Dashboard = () => {
 
                 return (
                   <div key={log.id || idx} className="flex items-start gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg transition-all">
-                    <div className={`p-1.5 rounded-lg ${colorClass}`}>
+                    <div className={`p-1.5 rounded-lg ₹{colorClass}`}>
                       <Icon size={14} />
                     </div>
                     <div className="space-y-0.5">
                       <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                        {log.action} {log.entity_type && `- ${log.entity_type}`}
+                        {log.action} {log.entity_type && `- ₹{log.entity_type}`}
                       </p>
                       <p className="text-[11px] text-slate-400 leading-normal">
-                        {log.details || `Action performed on ${log.entity_type} #${log.entity_id}`}
+                        {log.details || `Action performed on ₹{log.entity_type} #${log.entity_id}`}
                         <span className="block mt-0.5 opacity-60">
                           {new Date(log.timestamp).toLocaleString()}
                         </span>

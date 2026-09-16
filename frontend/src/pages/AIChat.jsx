@@ -87,16 +87,16 @@ const AIChat = () => {
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex items-start gap-3 max-w-[85%] ${
+            className={`flex items-start gap-3 max-w-[85%] ₹{
               msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''
             }`}
           >
-            <div className={`p-2 rounded-xl shrink-0 ${
+            <div className={`p-2 rounded-xl shrink-0 ₹{
               msg.sender === 'user' ? 'bg-indigo-100 text-indigo-600' : 'bg-brand-50 dark:bg-brand-950/20 text-brand-500'
             }`}>
               {msg.sender === 'user' ? <User size={14} /> : <BrainCircuit size={14} />}
             </div>
-            <div className={`p-4 rounded-2xl text-xs font-semibold leading-relaxed whitespace-pre-line shadow-sm border ${
+            <div className={`p-4 rounded-2xl text-xs font-semibold leading-relaxed whitespace-pre-line shadow-sm border ₹{
               msg.sender === 'user'
                 ? 'bg-brand-600 text-white border-brand-700 rounded-tr-none'
                 : 'bg-slate-50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-200 border-slate-100 dark:border-slate-800 rounded-tl-none'

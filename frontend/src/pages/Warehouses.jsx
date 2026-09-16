@@ -166,7 +166,7 @@ const Warehouses = () => {
             <div
               key={w.id}
               onClick={() => handleWarehouseClick(w)}
-              className={`p-6 bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-md transition-all duration-200 ${
+              className={`p-6 bg-white dark:bg-slate-900 border rounded-2xl cursor-pointer hover:shadow-md transition-all duration-200 ₹{
                 activeWh?.id === w.id 
                   ? 'border-brand-500 ring-2 ring-brand-500/10' 
                   : 'border-slate-200 dark:border-slate-800'
@@ -204,7 +204,7 @@ const Warehouses = () => {
                 </div>
                 <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-300 ${
+                    className={`h-full transition-all duration-300 ₹{
                       w.utilization_pct > 85 ? 'bg-rose-500' :
                       w.utilization_pct > 60 ? 'bg-amber-500' : 'bg-brand-500'
                     }`}
@@ -263,8 +263,8 @@ const Warehouses = () => {
                       <td className="px-6 py-3.5 font-mono font-bold text-slate-400 text-[11px]">{item.sku}</td>
                       <td className="px-6 py-3.5 text-slate-900 dark:text-slate-100">{item.product_name}</td>
                       <td className="px-6 py-3.5 font-bold">{item.current_stock}</td>
-                      <td className="px-6 py-3.5">${item.buying_price.toFixed(2)}</td>
-                      <td className="px-6 py-3.5">${item.selling_price.toFixed(2)}</td>
+                      <td className="px-6 py-3.5">₹{item.buying_price.toFixed(2)}</td>
+                      <td className="px-6 py-3.5">₹{item.selling_price.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
