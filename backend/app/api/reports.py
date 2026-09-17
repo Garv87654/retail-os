@@ -149,7 +149,7 @@ def export_pdf_report(report_type: str, db: Session = Depends(get_db), current_u
             pdf.cell(40, 8, str(p.sku), 1)
             pdf.cell(80, 8, str(p.name[:35]), 1)
             pdf.cell(30, 8, str(p.current_stock), 1)
-            pdf.cell(30, 8, f"₹{p.buying_price:.2f}", 1)
+            pdf.cell(30, 8, f"${p.buying_price:.2f}", 1)
             pdf.ln()
             
     elif report_type == "sales":
@@ -166,7 +166,7 @@ def export_pdf_report(report_type: str, db: Session = Depends(get_db), current_u
         for s in sales:
             pdf.cell(50, 8, str(s.invoice_number), 1)
             pdf.cell(70, 8, str(s.customer_name), 1)
-            pdf.cell(30, 8, f"₹{s.grand_total:.2f}", 1)
+            pdf.cell(30, 8, f"${s.grand_total:.2f}", 1)
             pdf.cell(40, 8, str(s.shipment_status), 1)
             pdf.ln()
             

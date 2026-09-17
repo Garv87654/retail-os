@@ -92,7 +92,7 @@ const SalesOrders = () => {
     for (const item of items) {
       const p = products.find(prod => prod.id === parseInt(item.product_id))
       if (p && p.current_stock < item.quantity) {
-        alert(`Insufficient stock for ₹{p.name}. Only ₹{p.current_stock} available.`)
+        alert(`Insufficient stock for ${p.name}. Only ${p.current_stock} available.`)
         return
       }
     }
@@ -128,7 +128,7 @@ const SalesOrders = () => {
         {isWriter && (
           <button
             onClick={() => {
-              setCustomerName(`Client ₹{Math.floor(100 + Math.random() * 900)} Inc.`)
+              setCustomerName(`Client ${Math.floor(100 + Math.random() * 900)} Inc.`)
               setShowFormModal(true)
             }}
             className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-500 shadow-md shadow-brand-600/10"
@@ -167,14 +167,14 @@ const SalesOrders = () => {
                     <td className="px-6 py-4 font-mono font-bold text-slate-400 text-[11px]">{so.invoice_number}</td>
                     <td className="px-6 py-4 text-slate-900 dark:text-slate-100">{so.customer_name}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[8.5px] font-extrabold uppercase ₹{
+                      <span className={`px-2 py-0.5 rounded-full text-[8.5px] font-extrabold uppercase ${
                         so.payment_status === 'Paid' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'
                       }`}>
                         {so.payment_status}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[8.5px] font-extrabold uppercase ₹{
+                      <span className={`px-2 py-0.5 rounded-full text-[8.5px] font-extrabold uppercase ${
                         so.shipment_status === 'Delivered' ? 'bg-emerald-500/10 text-emerald-500' :
                         so.shipment_status === 'Shipped' ? 'bg-brand-500/10 text-brand-500' :
                         'bg-amber-500/10 text-amber-500'
@@ -182,7 +182,7 @@ const SalesOrders = () => {
                         {so.shipment_status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">₹{so.grand_total.toFixed(2)}</td>
+                    <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">${so.grand_total.toFixed(2)}</td>
                     <td className="px-6 py-4 text-right space-x-2">
                       <button
                         onClick={() => {
@@ -267,7 +267,7 @@ const SalesOrders = () => {
                       />
                     </div>
                     <div className="w-28">
-                      <label className="block text-[10px] text-slate-400 mb-1">Selling Price (₹)</label>
+                      <label className="block text-[10px] text-slate-400 mb-1">Selling Price ($)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -292,11 +292,11 @@ const SalesOrders = () => {
               {/* extras */}
               <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <div>
-                  <label className="block text-slate-400 mb-1">Sales Tax (₹)</label>
+                  <label className="block text-slate-400 mb-1">Sales Tax ($)</label>
                   <input type="number" step="0.01" value={tax} onChange={(e) => setTax(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Promo Discount (₹)</label>
+                  <label className="block text-slate-400 mb-1">Promo Discount ($)</label>
                   <input type="number" step="0.01" value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
               </div>
@@ -348,10 +348,10 @@ const SalesOrders = () => {
                   <div key={idx} className="flex justify-between py-2 text-xs">
                     <div>
                       <p className="font-semibold text-slate-800 dark:text-slate-200">{item.product_name}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{item.quantity} Units @ ₹{item.selling_price.toFixed(2)}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{item.quantity} Units @ ${item.selling_price.toFixed(2)}</p>
                     </div>
                     <span className="font-bold text-slate-700 dark:text-slate-300">
-                      ₹{(item.quantity * item.selling_price).toFixed(2)}
+                      ${(item.quantity * item.selling_price).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -361,7 +361,7 @@ const SalesOrders = () => {
             <div className="space-y-1.5 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-xs font-semibold text-slate-400">
               <div className="flex justify-between">
                 <span>Sales Tax:</span>
-                <span className="text-slate-800 dark:text-slate-200">₹{selectedOrder.tax.toFixed(2)}</span>
+                <span className="text-slate-800 dark:text-slate-200">${selectedOrder.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Discount:</span>
@@ -369,7 +369,7 @@ const SalesOrders = () => {
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-800 dark:text-slate-100">
                 <span>Grand Total Paid:</span>
-                <span>₹{selectedOrder.grand_total.toFixed(2)}</span>
+                <span>${selectedOrder.grand_total.toFixed(2)}</span>
               </div>
             </div>
           </div>
