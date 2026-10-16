@@ -191,7 +191,7 @@ const Dashboard = () => {
         />
         <MetricCard
           title="Monthly Revenue"
-          value={`$${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
+          value={`₹${(summary?.sales?.total_revenue ?? 0.00).toLocaleString()}`}
           icon={DollarSign}
           change={summary?.sales?.total_revenue > 0 ? "+15.3%" : null}
           accentColor="border-t-emerald-500"

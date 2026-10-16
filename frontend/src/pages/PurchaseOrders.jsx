@@ -183,7 +183,7 @@ const PurchaseOrders = () => {
                     <td className="px-6 py-4 font-mono font-bold text-slate-400 text-[11px]">{po.order_number}</td>
                     <td className="px-6 py-4 text-slate-900 dark:text-slate-100">{po.supplier_name}</td>
                     <td className="px-6 py-4">{new Date(po.expected_delivery).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">${po.grand_total.toFixed(2)}</td>
+                    <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">₹{po.grand_total.toFixed(2)}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider ${
                         po.status === 'Delivered' ? 'bg-emerald-500/10 text-emerald-500' :
@@ -265,7 +265,7 @@ const PurchaseOrders = () => {
                         onChange={(e) => handleItemChange(idx, 'product_id', e.target.value)}
                         className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg"
                       >
-                        {products.map(p => <option key={p.id} value={p.id}>{p.name} (${p.buying_price})</option>)}
+                        {products.map(p => <option key={p.id} value={p.id}>{p.name} (₹{p.buying_price})</option>)}
                       </select>
                     </div>
                     <div className="w-24">
@@ -279,7 +279,7 @@ const PurchaseOrders = () => {
                       />
                     </div>
                     <div className="w-28">
-                      <label className="block text-[10px] text-slate-400 mb-1">Buying Price ($)</label>
+                      <label className="block text-[10px] text-slate-400 mb-1">Buying Price (₹)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -304,15 +304,15 @@ const PurchaseOrders = () => {
               {/* Extras */}
               <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <div>
-                  <label className="block text-slate-400 mb-1">Tax ($)</label>
+                  <label className="block text-slate-400 mb-1">Tax (₹)</label>
                   <input type="number" step="0.01" value={tax} onChange={(e) => setTax(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Discount ($)</label>
+                  <label className="block text-slate-400 mb-1">Discount (₹)</label>
                   <input type="number" step="0.01" value={discount} onChange={(e) => setDiscount(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Shipping Freight ($)</label>
+                  <label className="block text-slate-400 mb-1">Shipping Freight (₹)</label>
                   <input type="number" step="0.01" value={shipping} onChange={(e) => setShipping(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
               </div>
@@ -364,10 +364,10 @@ const PurchaseOrders = () => {
                   <div key={idx} className="flex justify-between py-2 text-xs">
                     <div>
                       <p className="font-semibold text-slate-800 dark:text-slate-200">{item.product_name}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">{item.quantity} Units @ ${item.buying_price.toFixed(2)}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{item.quantity} Units @ ₹{item.buying_price.toFixed(2)}</p>
                     </div>
                     <span className="font-bold text-slate-700 dark:text-slate-300">
-                      ${(item.quantity * item.buying_price).toFixed(2)}
+                      ₹{(item.quantity * item.buying_price).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -378,19 +378,19 @@ const PurchaseOrders = () => {
             <div className="space-y-1.5 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-xs font-semibold text-slate-400 mb-6">
               <div className="flex justify-between">
                 <span>Tax:</span>
-                <span className="text-slate-800 dark:text-slate-200">${selectedPO.tax.toFixed(2)}</span>
+                <span className="text-slate-800 dark:text-slate-200">₹{selectedPO.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Discount:</span>
-                <span className="text-slate-800 dark:text-slate-200">-${selectedPO.discount.toFixed(2)}</span>
+                <span className="text-slate-800 dark:text-slate-200">-₹{selectedPO.discount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping:</span>
-                <span className="text-slate-800 dark:text-slate-200">${selectedPO.shipping.toFixed(2)}</span>
+                <span className="text-slate-800 dark:text-slate-200">₹{selectedPO.shipping.toFixed(2)}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-800 dark:text-slate-100">
                 <span>Grand Total:</span>
-                <span>${selectedPO.grand_total.toFixed(2)}</span>
+                <span>₹{selectedPO.grand_total.toFixed(2)}</span>
               </div>
             </div>
 

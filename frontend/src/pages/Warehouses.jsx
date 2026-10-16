@@ -263,8 +263,8 @@ const Warehouses = () => {
                       <td className="px-6 py-3.5 font-mono font-bold text-slate-400 text-[11px]">{item.sku}</td>
                       <td className="px-6 py-3.5 text-slate-900 dark:text-slate-100">{item.product_name}</td>
                       <td className="px-6 py-3.5 font-bold">{item.current_stock}</td>
-                      <td className="px-6 py-3.5">${item.buying_price.toFixed(2)}</td>
-                      <td className="px-6 py-3.5">${item.selling_price.toFixed(2)}</td>
+                      <td className="px-6 py-3.5">₹{item.buying_price.toFixed(2)}</td>
+                      <td className="px-6 py-3.5">₹{item.selling_price.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>

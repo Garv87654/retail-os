@@ -236,7 +236,7 @@ const Suppliers = () => {
                           <tr key={po.id}>
                             <td className="px-4 py-2.5 font-mono text-slate-400">{po.order_number}</td>
                             <td className="px-4 py-2.5">{new Date(po.created_at).toLocaleDateString()}</td>
-                            <td className="px-4 py-2.5 font-bold">${po.grand_total.toFixed(2)}</td>
+                            <td className="px-4 py-2.5 font-bold">₹{po.grand_total.toFixed(2)}</td>
                             <td className="px-4 py-2.5">
                               <span className="text-[10px] font-bold uppercase tracking-wider">{po.status}</span>
                             </td>

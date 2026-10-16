@@ -357,8 +357,8 @@ const Inventory = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{p.category_name || 'General'}</td>
-                    <td className="px-6 py-4 font-semibold">${p.buying_price.toFixed(2)}</td>
-                    <td className="px-6 py-4 font-semibold">${p.selling_price.toFixed(2)}</td>
+                    <td className="px-6 py-4 font-semibold">₹{p.buying_price.toFixed(2)}</td>
+                    <td className="px-6 py-4 font-semibold">₹{p.selling_price.toFixed(2)}</td>
                     <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-300">{p.current_stock}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-wide ${
@@ -452,11 +452,11 @@ const Inventory = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-400 mb-1">Buying Price ($)</label>
+                  <label className="block text-slate-400 mb-1">Buying Price (₹)</label>
                   <input type="number" step="0.01" required value={buying} onChange={(e) => setBuying(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">Selling Price ($)</label>
+                  <label className="block text-slate-400 mb-1">Selling Price (₹)</label>
                   <input type="number" step="0.01" required value={selling} onChange={(e) => setSelling(e.target.value)} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border dark:border-slate-700 rounded-lg" />
                 </div>
               </div>
