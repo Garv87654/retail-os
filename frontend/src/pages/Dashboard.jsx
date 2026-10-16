@@ -113,13 +113,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8 p-1">
-      {/* Dynamic Operational Header */}
-      <div className="border-b border-slate-200 dark:border-slate-800 pb-5">
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
-          Good morning, {displayName}.
-        </h1>
 
-      </div>
 
       {/* Needs Attention / Actionable Panel */}
       <div className="bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/50 p-5 rounded-xl space-y-3 shadow-sm">
