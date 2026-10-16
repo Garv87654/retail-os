@@ -213,7 +213,9 @@ const Inventory = () => {
   }
 
   const handleCsvExport = () => {
-    window.open('http://localhost:8000/api/products/export/csv', '_blank')
+    const backendUrl = import.meta.env.VITE_API_URL || 'https://retailos-backend-2fhj.onrender.com'
+    const token = localStorage.getItem('token')
+    window.open(`${backendUrl}/api/products/export/csv?token=${token}`, '_blank')
   }
 
   const handleCsvUpload = async (e) => {
