@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Bell, Search, Sun, Moon, User as UserIcon, X, Check } from 'lucide-react'
+import { Bell, Sun, Moon, User as UserIcon, X, Check } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import API from '../services/api'
@@ -7,7 +7,6 @@ import API from '../services/api'
 const Navbar = () => {
   const { user } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const [searchQuery, setSearchQuery] = useState('')
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Low Stock Alert', message: 'VoltTech Item 1 is below safety stock thresholds.', type: 'LOW_STOCK', read: false },
     { id: 2, title: 'Supplier Delay', message: 'Supplier Nexus 4 reported shipping delay for PO-102.', type: 'SUPPLIER_DELAY', read: false },
@@ -27,21 +26,7 @@ const Navbar = () => {
   }
 
   return (
-    <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 flex items-center justify-between sticky top-0 z-30 transition-colors duration-200">
-      {/* Global Search Bar */}
-      <div className="flex-1 max-w-md">
-        <div className="relative">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Global search across products, orders, suppliers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all duration-200"
-          />
-        </div>
-      </div>
-
+    <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 flex items-center justify-end sticky top-0 z-30 transition-colors duration-200">
       {/* Action Buttons & Profile */}
       <div className="flex items-center gap-4">
         {/* Dark Mode Toggle */}
